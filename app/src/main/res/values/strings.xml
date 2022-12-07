@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Planevent</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">הבית</string>
+    <string name="title_event">אירועים</string>
+    <string name="title_edit">עריכה</string>
+    <string name="title_schedule">לוז</string>
+
 </resources>

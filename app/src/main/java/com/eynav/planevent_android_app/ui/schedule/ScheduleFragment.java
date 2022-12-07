@@ -1,4 +1,4 @@
-package com.eynav.planevent_android_app.ui.dashboard;
+package com.eynav.planevent_android_app.ui.schedule;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.eynav.planevent_android_app.databinding.FragmentDashboardBinding;
+import com.eynav.planevent_android_app.databinding.FragmentEventBinding;
 
-public class DashboardFragment extends Fragment {
+public class ScheduleFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentEventBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        ScheduleViewModel dashboardViewModel =
+                new ViewModelProvider(this).get(ScheduleViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textDashboard;
+//        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="@color/green"
+    android:paddingLeft="22dp"
+    android:paddingRight="22dp"
+
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvTitleAddUpdateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
+        android:text="Add Event" />
+
+    <Spinner
+        android:id="@+id/spTypeEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+
+         />
+
+    <EditText
+        android:id="@+id/etDateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:hint="בחר תאריך..."
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+
+        />
+    <Spinner
+        android:id="@+id/spHourEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+
+        />
+
+    <EditText
+        android:id="@+id/etCountInvited"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:inputType="number"
+        android:textSize="14sp"
+
+        android:layout_marginTop="4dp"
+        android:hint="כמות מוזמנים" />
+    <EditText
+        android:id="@+id/etPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:inputType="number"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:hint="מחיר בסיסי שנסגר" />
+
+    <EditText
+        android:id="@+id/etLastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:inputType="text"
+        android:textSize="14sp"
+
+        android:layout_marginTop="4dp"
+        android:hint="שם משפחה" />
+    <EditText
+        android:id="@+id/etEmailClient1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="14sp"
+
+        android:background="@color/white"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="4dp"
+
+        android:hint=" אימייל לקוח 1"
+        />
+
+    <EditText
+        android:id="@+id/etEmailClient2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:inputType="textEmailAddress"
+        android:background="@color/white"
+        android:textSize="14sp"
+
+        android:layout_marginTop="8dp"
+        android:hint=" אימייל לקוח 2"/>
+
+    <Button
+        android:id="@+id/btnAddUpdateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+
+        android:layout_gravity="end"
+        android:text="Add"
+        />
+</LinearLayout>
