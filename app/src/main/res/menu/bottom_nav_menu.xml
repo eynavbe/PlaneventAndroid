@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        tools:ignore="MenuTitle"/>
 
     <item
         android:id="@+id/navigation_event"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_event" />
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/navigation_edit"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_edit" />
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/navigation_schedule"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_schedule" />
+        tools:ignore="MenuTitle" />
 
 </menu>

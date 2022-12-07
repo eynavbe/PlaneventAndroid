@@ -1,8 +1,11 @@
 package com.eynav.planevent_android_app.ui.event;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,12 +45,27 @@ public class EventFragment extends Fragment {
     EventsAdapter eventsAdapter;
     String dateEvent = "";
     boolean test = true;
+    SharedPreferences shareType;
+
     String[] type = {"סוג אירוע", "חתונה", "בת מצווה",
             "בר מצווה", "ברית מילה",
             "עסקים", "אחר"};
     String[] hour = {"אירוע ערב", "אירוע צהריים"};
     String typeChoice = "סוג אירוע";
     String hourChoice = "אירוע ערב";
+    String typePage;
+    @Override
+    public void onStart() {
+        super.onStart();
+        shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
+        typePage = shareType.getString("type", "default if empty");
+        if (typePage.equals("Hall")){
+            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("אירועים");
+        }else {
+            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("בחירות");
+
+        }
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package com.eynav.planevent_android_app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -16,6 +17,12 @@ import com.eynav.planevent_android_app.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent integer = getIntent();
         String type = integer.getStringExtra("type");
+
         System.out.println(type);
     }
 
