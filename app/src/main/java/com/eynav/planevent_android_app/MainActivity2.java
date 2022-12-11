@@ -19,7 +19,6 @@ public class MainActivity2 extends AppCompatActivity {
         btnClient = findViewById(R.id.btnClient);
         btnHall.setOnClickListener(l ->{
             Intent homeHall= new Intent(this, MainActivity.class);
-            homeHall.putExtra("type","Hall");
             // get or create SharedPreferences
             shareType = getSharedPreferences("type", MODE_PRIVATE);
 
@@ -29,7 +28,6 @@ public class MainActivity2 extends AppCompatActivity {
         });
         btnClient.setOnClickListener(l ->{
             Intent homeHall= new Intent(this, MainActivity.class);
-            homeHall.putExtra("type","Client");
             // get or create SharedPreferences
             shareType = getSharedPreferences("type", MODE_PRIVATE);
 

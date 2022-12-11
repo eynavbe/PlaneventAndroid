@@ -2,49 +2,52 @@ package com.eynav.planevent_android_app.ui.edit;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.ActionBar;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.eynav.planevent_android_app.MainActivity;
-import com.eynav.planevent_android_app.databinding.FragmentEditBinding;
+import com.eynav.planevent_android_app.R;
 
 public class EditFragment extends Fragment  {
 
-    private FragmentEditBinding binding;
     SharedPreferences shareType;
-    String type;
+    String typePage;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        EditViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(EditViewModel.class);
-        binding = FragmentEditBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
-         type = shareType.getString("type", "default if empty");
-        if (type.equals("Hall")) {
+        typePage = shareType.getString("type", "default if empty");
+        if (typePage.equals("Hall")) {
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
+            return inflater.inflate(R.layout.fragment_hall_edit, container, false);
+
         }else {
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("סיכום");
+            return inflater.inflate(R.layout.fragment_client_summary, container, false);
 
         }
-        return root;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (typePage.equals("Hall")) {
+        }
+        if (typePage.equals("Client")) {
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }

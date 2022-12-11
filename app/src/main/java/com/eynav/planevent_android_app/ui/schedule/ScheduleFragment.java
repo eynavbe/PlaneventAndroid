@@ -10,43 +10,43 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.eynav.planevent_android_app.R;
 import com.eynav.planevent_android_app.databinding.FragmentScheduleBinding;
 
 public class ScheduleFragment extends Fragment {
 
-    private FragmentScheduleBinding binding;
     SharedPreferences shareType;
-    String type;
-    public void onStart() {
-        super.onStart();
+    String typePage;
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
-         type = shareType.getString("type", "default if empty");
-        if (type.equals("Hall")){
+        typePage = shareType.getString("type", "default if empty");
+        if (typePage.equals("Hall")){
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("לו\"ז");
         }else {
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("לו\"ז");
 
         }
+        return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        ScheduleViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(ScheduleViewModel.class);
 
-        binding = FragmentScheduleBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-
-        return root;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (typePage.equals("Hall")) {
+        }
+        if (typePage.equals("Client")) {
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }

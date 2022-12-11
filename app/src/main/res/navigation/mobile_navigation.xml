@@ -15,13 +15,13 @@
         android:id="@+id/navigation_event"
         android:name="com.eynav.planevent_android_app.ui.event.EventFragment"
         android:label="@string/title_event"
-        tools:layout="@layout/fragment_event" />
+        tools:layout="@layout/fragment_hall_event" />
 
     <fragment
         android:id="@+id/navigation_edit"
         android:name="com.eynav.planevent_android_app.ui.edit.EditFragment"
         android:label="@string/title_edit"
-        tools:layout="@layout/fragment_edit" />
+        tools:layout="@layout/fragment_hall_edit" />
 
     <fragment
         android:id="@+id/navigation_schedule"

@@ -49,12 +49,12 @@
             android:background="@color/green"
             android:padding="8dp">
             <TextView
-                android:id="@+id/tvTypeEvent"
+                android:id="@+id/tvHallName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TypeEvent"/>
             <TextView
-                android:id="@+id/tvDateEvent"
+                android:id="@+id/tvHallArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="DateEvent"/>

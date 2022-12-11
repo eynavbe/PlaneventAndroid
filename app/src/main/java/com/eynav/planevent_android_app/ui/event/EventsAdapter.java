@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eynav.planevent_android_app.Event;
 import com.eynav.planevent_android_app.R;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -236,8 +235,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
         public EventsAdapterHolder(@NonNull View itemView) {
             super(itemView);
             cartEvent = itemView.findViewById(R.id.cartEvent);
-            tvTypeEvent = itemView.findViewById(R.id.tvTypeEvent);
-            tvDateEvent = itemView.findViewById(R.id.tvDateEvent);
+            tvTypeEvent = itemView.findViewById(R.id.tvHallName);
+            tvDateEvent = itemView.findViewById(R.id.tvHallArea);
             tvLastNameEvent = itemView.findViewById(R.id.tvLastNameEvent);
             imUpdateEvent = itemView.findViewById(R.id.imUpdateEvent);
             imDeleteEvent = itemView.findViewById(R.id.imDeleteEvent);
