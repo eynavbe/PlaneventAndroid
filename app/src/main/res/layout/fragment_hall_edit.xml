@@ -1,21 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
     <TextView
-        android:id="@+id/text_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp"
+        android:text="עריכה ___"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tvHallEditIncludedInPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="__ שכלולים במחיר."/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_plus_circle_24" />
+            <TextView
+                android:id="@+id/HallEditChooseCountAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_minus_circle_24" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvHallEditIncluded"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="מתוך"/>
+        <Spinner
+            android:id="@+id/spHallEditChooseFromAll"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginTop="4dp"
+            />
+        <TextView
+            android:id="@+id/tvHallEditPleaseChoose"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="נא לבחור"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvHallEditInAdditionThere"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="בנוסף קיים אפשרות לבחור ___ בתוספת תשלום"/>
+
+    <LinearLayout
+        android:id="@+id/llListHallEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+        <Button
+            android:id="@+id/btnAddToListHallEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_primary"
+            android:textColor="@color/white"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Add"
+            android:drawableRight="@drawable/ic_baseline_add_white"
+            />
+        <Button
+            android:id="@+id/btnSaveListHallEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:background="@drawable/round_primary"
+            android:textColor="@color/white"
+            android:text="Save"
+            />
+    </LinearLayout>
+
+</LinearLayout>

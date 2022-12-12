@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/green"
     android:paddingLeft="22dp"
     android:paddingRight="22dp"
-
+    android:gravity="center"
     android:orientation="vertical">
     <TextView
         android:id="@+id/tvTitleAddUpdateEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="32sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_margin="8dp"
@@ -25,7 +26,8 @@
         android:background="@color/white"
         android:layout_marginTop="4dp"
         android:textSize="14sp"
-
+        android:layout_gravity="center"
+        android:gravity="center"
          />
 
     <EditText
@@ -33,6 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:hint="בחר תאריך..."
         android:padding="8dp"
         android:layout_marginTop="4dp"
@@ -46,7 +50,8 @@
         android:background="@color/white"
         android:layout_marginTop="4dp"
         android:textSize="14sp"
-
+        android:layout_gravity="center"
+        android:gravity="center"
         />
 
     <EditText
@@ -56,8 +61,10 @@
         android:padding="8dp"
         android:background="@color/white"
         android:inputType="number"
-        android:textSize="14sp"
+        android:layout_gravity="center"
 
+        android:textSize="14sp"
+        android:gravity="center"
         android:layout_marginTop="4dp"
         android:hint="כמות מוזמנים" />
     <EditText
@@ -68,6 +75,8 @@
         android:background="@color/white"
         android:inputType="number"
         android:layout_marginTop="4dp"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:textSize="14sp"
         android:hint="מחיר בסיסי שנסגר" />
 
@@ -79,7 +88,8 @@
         android:background="@color/white"
         android:inputType="text"
         android:textSize="14sp"
-
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_marginTop="4dp"
         android:hint="שם משפחה" />
     <EditText
@@ -88,11 +98,12 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textSize="14sp"
+        android:layout_gravity="center"
 
         android:background="@color/white"
         android:inputType="textEmailAddress"
         android:layout_marginTop="4dp"
-
+        android:gravity="center"
         android:hint=" אימייל לקוח 1"
         />
 
@@ -104,7 +115,8 @@
         android:inputType="textEmailAddress"
         android:background="@color/white"
         android:textSize="14sp"
-
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_marginTop="8dp"
         android:hint=" אימייל לקוח 2"/>
 
@@ -115,8 +127,8 @@
         android:backgroundTint="@color/purple"
         android:layout_marginTop="8dp"
         android:textSize="14sp"
-
-        android:layout_gravity="end"
+        android:gravity="center"
+        android:layout_gravity="end|center"
         android:text="Add"
         />
 </LinearLayout>
