@@ -61,8 +61,8 @@ public class EventFragment extends Fragment {
             return inflater.inflate(R.layout.fragment_hall_event, container, false);
 
         }else {
-            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("בחירות");
-            return inflater.inflate(R.layout.fragment_client_choose, container, false);
+            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("סיכום");
+            return inflater.inflate(R.layout.fragment_client_summary, container, false);
 
         }
     }

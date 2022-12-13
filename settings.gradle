@@ -10,7 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }  //Make sure to add this in your project for uCrop - an internal library
     }
 }
+
 rootProject.name = "Planevent_Android_App"
 include ':app'

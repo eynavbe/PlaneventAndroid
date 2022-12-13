@@ -26,24 +26,28 @@
             android:layout_height="match_parent"
             android:text="__ שכלולים במחיר."/>
         <LinearLayout
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
-
-
-
-
-
             <ImageView
+                android:id="@+id/imHallEditPlusChooseCountAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/purple"
                 app:srcCompat="@drawable/ic_plus_circle_24" />
             <TextView
-                android:id="@+id/HallEditChooseCountAll"
+                android:id="@+id/tvHallEditChooseCountAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:text="0"/>
             <ImageView
+                android:id="@+id/imHallEditMinusChooseCountAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/purple"
@@ -56,13 +60,34 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="מתוך"/>
-        <Spinner
-            android:id="@+id/spHallEditChooseFromAll"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:layout_marginTop="4dp"
-            />
+        <LinearLayout
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imHallEditPlusChooseFromAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_plus_circle_24" />
+            <TextView
+                android:id="@+id/tvHallEditChooseFromAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:inputType="number"
+                android:text="0"/>
+            <ImageView
+                android:id="@+id/imHallEditMinusChooseFromAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_minus_circle_24" />
+        </LinearLayout>
         <TextView
             android:id="@+id/tvHallEditPleaseChoose"
             android:layout_width="wrap_content"
@@ -75,13 +100,6 @@
         android:layout_height="wrap_content"
         android:text="בנוסף קיים אפשרות לבחור ___ בתוספת תשלום"/>
 
-    <LinearLayout
-        android:id="@+id/llListHallEdit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
-    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -112,5 +130,19 @@
             android:text="Save"
             />
     </LinearLayout>
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/llListHallEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+
+    </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>
