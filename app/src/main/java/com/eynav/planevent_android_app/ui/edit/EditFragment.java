@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +24,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eynav.planevent_android_app.R;
-import com.eynav.planevent_android_app.ui.event.EventsAdapter;
 import com.github.drjacky.imagepicker.ImagePicker;
 import com.github.drjacky.imagepicker.constant.ImageProvider;
 
@@ -48,13 +45,12 @@ public class EditFragment extends Fragment  {
 
     SharedPreferences shareType;
     String typePage;
-//    Spinner spHallEditChooseFromAll,spHallEditChooseCountAll;
-    String chooseCountAll = "";
     LinearLayout llListHallEdit;
     ImageButton imImageProductEdit;
     boolean test = true;
     List<Product> products = new ArrayList<>();
     ActivityResultLauncher<Intent> launcher;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -119,14 +115,14 @@ public class EditFragment extends Fragment  {
                 }
 
             });
-//            spHallEditChooseFromAll = view.findViewById(R.id.spHallEditChooseFromAll);
-//            spHallEditChooseCountAll = view.findViewById(R.id.spHallEditChooseCountAll);
-
             Button btnAddToListHallEdit;
             Button btnSaveListHallEdit;
             llListHallEdit = view.findViewById(R.id.llListHallEdit);
             btnAddToListHallEdit = view.findViewById(R.id.btnAddToListHallEdit);
             btnSaveListHallEdit = view.findViewById(R.id.btnSaveListHallEdit);
+
+            readListHallEditInFirebase(llListHallEdit);
+
             btnAddToListHallEdit.setOnClickListener(l ->{
                 addNewBoxView(llListHallEdit);
             });
@@ -157,7 +153,7 @@ public class EditFragment extends Fragment  {
                 if (products.size() == 0){
                     Toast.makeText(getContext(), "תוסיף קודם נתונים", Toast.LENGTH_SHORT).show();
                 }else {
-                    saveListHallEditInFirebase();
+                    saveListHallEditInFirebase(products);
                 }
 
             });
@@ -166,17 +162,64 @@ public class EditFragment extends Fragment  {
 
         }
         if (typePage.equals("Client")) {
+            readDataOfProductsFromClientIfHaveElseFromHall();
+            products.add(new Product("שם מוצר",10,"image",false));
+            RecyclerView rvListClientChoose = view.findViewById(R.id.rvListClientChoose);
+            Button btnSaveClientChoose = view.findViewById(R.id.btnSaveClientChoose);
 
-            RecyclerView rvListClientChoose;
-            rvListClientChoose = view.findViewById(R.id.rvListClientChoose);
             rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
             ProductAdapter productAdapter = new ProductAdapter(getContext(), products);
             rvListClientChoose.setAdapter(productAdapter);
+            btnSaveClientChoose.setOnClickListener(l ->{
+                ArrayList<Product> productWithChooseOrNoClient = (ArrayList<Product>) productAdapter.getData();
+//                for (int i = 0; i < values.size(); i++) {
+//                    System.out.println(values.get(i));
+//                    if (values.get(i).isChooseThis()){
+//                        productsChoose.add(values.get(i));
+//                    }
+//                }
+                saveInFirebaseClient(productWithChooseOrNoClient);
+            });
+
 
         }
     }
 
-    private void saveListHallEditInFirebase() {
+    private void readListHallEditInFirebase(LinearLayout llListHallEdit) {
+        View boxViewEdit = getLayoutInflater().inflate(R.layout.hall_edit_card_view, null, false);
+        EditText etNameProductEdit = boxViewEdit.findViewById(R.id.etNameProductEdit);
+        ImageView imgDeleteProductEdi = boxViewEdit.findViewById(R.id.imgDeleteProductEdit);
+        EditText etPriceProductEdit = boxViewEdit.findViewById(R.id.etPriceProductEdit);
+        imImageProductEdit = boxViewEdit.findViewById(R.id.imImageProductEdit);
+
+//        TODO
+//        etNameProductEdit.setText();
+//        etPriceProductEdit.setText();
+//        imgDeleteProductEdi.set
+
+        imgDeleteProductEdi.setOnClickListener(l ->{
+            removeBoxView(boxViewEdit);
+        });
+        imImageProductEdit.setOnClickListener(l ->{
+            imImageProductEdit = boxViewEdit.findViewById(R.id.imImageProductEdit);
+            imageBoxView(boxViewEdit);
+
+        });
+        llListHallEdit.addView(boxViewEdit);
+    }
+
+    private void readDataOfProductsFromClientIfHaveElseFromHall() {
+        //        TODO
+    }
+
+    private void saveInFirebaseClient(ArrayList<Product> productWithChooseOrNoClient) {
+//        TODO
+        Toast.makeText(getContext(), "הבחירה נשמרה", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void saveListHallEditInFirebase(List<Product> products) {
+        //        TODO
         Toast.makeText(getContext(), "נשמר", Toast.LENGTH_SHORT).show();
 
 

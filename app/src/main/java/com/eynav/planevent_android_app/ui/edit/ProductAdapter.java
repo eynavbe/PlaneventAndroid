@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     List<Product> products;
     Context context;
 
+
     public ProductAdapter(Context context, List<Product> products) {
         this.context = context;
         this.products = products;
@@ -35,11 +39,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     public void onBindViewHolder(@NonNull ProductAdapter.ProductAdapterHolder holder, int position) {
         Product product = products.get(position);
         holder.tvClientProductName.setText(product.getName());
-        holder.tvClientProductPrice.setText(product.getPrice());
+        holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
 
         holder.product = product;
-    }
 
+        holder.ctvClientChooseProduct.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (holder.ctvClientChooseProduct.isChecked()) {
+                product.setChooseThis(true);
+                System.out.println("true");
+            } else {
+                product.setChooseThis(false);
+                System.out.println("false");
+            }
+        });
+    }
+    public List<Product>  getData(){
+        return this.products;
+    }
     @Override
     public int getItemCount() {
         return products.size();
@@ -48,11 +64,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     public class ProductAdapterHolder extends RecyclerView.ViewHolder {
         Product product;
         TextView tvClientProductName, tvClientProductPrice;
+        CheckBox ctvClientChooseProduct;
         public ProductAdapterHolder(View itemView) {
             super(itemView);
             tvClientProductName = itemView.findViewById(R.id.tvClientProductName);
             tvClientProductPrice = itemView.findViewById(R.id.tvClientProductPrice);
-
+            ctvClientChooseProduct = itemView.findViewById(R.id.ctvClientChooseProduct);
         }
     }
 }
