@@ -27,7 +27,7 @@ public class MainActivity2 extends AppCompatActivity {
             this.startActivity(homeHall);
         });
         btnClient.setOnClickListener(l ->{
-            Intent homeHall= new Intent(this, MainActivity.class);
+            Intent homeHall= new Intent(this, ChooseHall.class);
             // get or create SharedPreferences
             shareType = getSharedPreferences("type", MODE_PRIVATE);
 

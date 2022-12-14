@@ -61,18 +61,8 @@ public class EditFragment extends Fragment  {
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
         typePage = shareType.getString("type", "default if empty");
         if (typePage.equals("Hall")) {
-            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
-            launcher=
-                    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),(ActivityResult result)->{
-                        if(result.getResultCode()==RESULT_OK){
-                            Uri uri=result.getData().getData();
-                            imImageProductEdit.setImageURI(uri);
-                            // Use the uri to load the image
-                        }else if(result.getResultCode()==ImagePicker.RESULT_ERROR){
-                            // Use ImagePicker.Companion.getError(result.getData()) to show an error
-                        }
-                    });
 
+            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
             return inflater.inflate(R.layout.fragment_hall_edit, container, false);
 
         }else {
@@ -89,6 +79,17 @@ public class EditFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         if (typePage.equals("Hall")) {
 
+
+            launcher=
+                    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),(ActivityResult result)->{
+                        if(result.getResultCode()==RESULT_OK){
+                            Uri uri=result.getData().getData();
+                            imImageProductEdit.setImageURI(uri);
+                            // Use the uri to load the image
+                        }else if(result.getResultCode()==ImagePicker.RESULT_ERROR){
+                            // Use ImagePicker.Companion.getError(result.getData()) to show an error
+                        }
+                    });
 
             ImageView imHallEditPlusChooseCountAll,imHallEditMinusChooseCountAll;
             TextView tvHallEditChooseCountAll;
@@ -186,12 +187,13 @@ public class EditFragment extends Fragment  {
         EditText etNameProductEdit = boxViewEdit.findViewById(R.id.etNameProductEdit);
         ImageView imgDeleteProductEdi = boxViewEdit.findViewById(R.id.imgDeleteProductEdit);
         EditText etPriceProductEdit = boxViewEdit.findViewById(R.id.etPriceProductEdit);
-        ImageButton imImageProductEdit = boxViewEdit.findViewById(R.id.imImageProductEdit);
+        imImageProductEdit = boxViewEdit.findViewById(R.id.imImageProductEdit);
 
         imgDeleteProductEdi.setOnClickListener(l ->{
             removeBoxView(boxViewEdit);
         });
         imImageProductEdit.setOnClickListener(l ->{
+            imImageProductEdit = boxViewEdit.findViewById(R.id.imImageProductEdit);
             imageBoxView(boxViewEdit);
 
         });
@@ -207,18 +209,16 @@ public class EditFragment extends Fragment  {
                 .crop()
                 .maxResultSize(512,512,true)
                 .provider(ImageProvider.BOTH) //Or bothCameraGallery()
-                .createIntentFromDialog((Function1)(new Function1(){
+                .createIntentFromDialog(new Function1(){
                     public Object invoke(Object var1){
                         this.invoke((Intent)var1);
                         return Unit.INSTANCE;
                     }
-
                     public final void invoke(@NotNull Intent it){
                         Intrinsics.checkNotNullParameter(it,"it");
-
                         launcher.launch(it);
                     }
-                }));
+                });
 
     }
 

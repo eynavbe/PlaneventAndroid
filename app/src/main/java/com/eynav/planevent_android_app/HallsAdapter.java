@@ -3,6 +3,7 @@ package com.eynav.planevent_android_app;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +66,21 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
 
                 // save your string in SharedPreferences
                 shareType.edit().putString("hall", hall.getNameHall()).commit();
+
+
+
+
+
+                Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
+                // get or create SharedPreferences
+                shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+
+                // save your string in SharedPreferences
+                shareType.edit().putString("type", "Client").commit();
+                itemView.getContext().startActivity(homeHall);
+
+
+
 //                Bundle bundle = new Bundle();
 //                bundle.putParcelable(TourInfo.EXTRA_TOUR, tour);
 //                Fragment fragment = new TourInfo();
