@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         Product product = products.get(position);
         holder.tvClientProductName.setText(product.getName());
         holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
-
+        holder.ctvClientChooseProduct.setChecked(product.isChooseThis());
+//        holder.imImageClientProduct.set
+//        TODO
         holder.product = product;
 
         holder.ctvClientChooseProduct.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -65,11 +68,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         Product product;
         TextView tvClientProductName, tvClientProductPrice;
         CheckBox ctvClientChooseProduct;
+        ImageView imImageClientProduct;
         public ProductAdapterHolder(View itemView) {
             super(itemView);
             tvClientProductName = itemView.findViewById(R.id.tvClientProductName);
             tvClientProductPrice = itemView.findViewById(R.id.tvClientProductPrice);
             ctvClientChooseProduct = itemView.findViewById(R.id.ctvClientChooseProduct);
+            imImageClientProduct = itemView.findViewById(R.id.imImageClientProduct);
         }
     }
 }
