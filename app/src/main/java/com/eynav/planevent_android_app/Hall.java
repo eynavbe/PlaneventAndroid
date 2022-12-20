@@ -1,14 +1,14 @@
 package com.eynav.planevent_android_app;
 
 public class Hall {
-    String nameHall, imHallImage,tvHallArea;
-    int tvHallCountPeople;
+    String nameHall, hallImage,hallArea;
+    Integer hallCountPeople;
 
-    public Hall(String nameHall, String imHallImage, String tvHallArea, int tvHallCountPeople) {
+    public Hall(String nameHall, String hallImage, String hallArea, Integer hallCountPeople) {
         this.nameHall = nameHall;
-        this.imHallImage = imHallImage;
-        this.tvHallArea = tvHallArea;
-        this.tvHallCountPeople = tvHallCountPeople;
+        this.hallImage = hallImage;
+        this.hallArea = hallArea;
+        this.hallCountPeople = hallCountPeople;
     }
 
     public String getNameHall() {
@@ -19,37 +19,37 @@ public class Hall {
         this.nameHall = nameHall;
     }
 
-    public String getImHallImage() {
-        return imHallImage;
+    public String getHallImage() {
+        return hallImage;
     }
 
-    public void setImHallImage(String imHallImage) {
-        this.imHallImage = imHallImage;
+    public void setHallImage(String hallImage) {
+        this.hallImage = hallImage;
     }
 
-    public String getTvHallArea() {
-        return tvHallArea;
+    public String getHallArea() {
+        return hallArea;
     }
 
-    public void setTvHallArea(String tvHallArea) {
-        this.tvHallArea = tvHallArea;
+    public void setHallArea(String hallArea) {
+        this.hallArea = hallArea;
     }
 
-    public int getTvHallCountPeople() {
-        return tvHallCountPeople;
+    public int getHallCountPeople() {
+        return hallCountPeople;
     }
 
-    public void setTvHallCountPeople(int tvHallCountPeople) {
-        this.tvHallCountPeople = tvHallCountPeople;
+    public void setHallCountPeople(Integer hallCountPeople) {
+        this.hallCountPeople = hallCountPeople;
     }
 
     @Override
     public String toString() {
         return "Hall{" +
                 "nameHall='" + nameHall + '\'' +
-                ", imHallImage='" + imHallImage + '\'' +
-                ", tvHallArea='" + tvHallArea + '\'' +
-                ", tvHallCountPeople=" + tvHallCountPeople +
+                ", hallImage='" + hallImage + '\'' +
+                ", hallArea='" + hallArea + '\'' +
+                ", hallCountPeople=" + hallCountPeople +
                 '}';
     }
 }

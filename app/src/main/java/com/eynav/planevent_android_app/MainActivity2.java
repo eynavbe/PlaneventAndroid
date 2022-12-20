@@ -28,6 +28,8 @@ public class MainActivity2 extends AppCompatActivity {
         });
         btnClient.setOnClickListener(l ->{
             Intent homeHall= new Intent(this, ChooseHall.class);
+//            homeHall.putExtra("email", emailClient);
+//            TODO homeHall.putExtra("email", emailClient);
             // get or create SharedPreferences
             shareType = getSharedPreferences("type", MODE_PRIVATE);
 
