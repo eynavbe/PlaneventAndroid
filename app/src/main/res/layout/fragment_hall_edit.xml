@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
+    android:background="@color/white"
     android:orientation="vertical">
     <TextView
+        android:id="@+id/tvNameHallEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -21,45 +23,11 @@
         android:gravity="right"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/tvHallEditIncludedInPrice"
+            android:id="@+id/tvHallEditPleaseChoose"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="__ שכלולים במחיר."/>
-        <LinearLayout
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/imHallEditPlusChooseCountAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/purple"
-                app:srcCompat="@drawable/ic_plus_circle_24" />
-            <TextView
-                android:id="@+id/tvHallEditChooseCountAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:text="0"/>
-            <ImageView
-                android:id="@+id/imHallEditMinusChooseCountAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/purple"
-                app:srcCompat="@drawable/ic_minus_circle_24" />
-        </LinearLayout>
+            android:text="נא לבחור"/>
 
-
-        <TextView
-            android:id="@+id/tvHallEditIncluded"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="מתוך"/>
         <LinearLayout
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
@@ -88,17 +56,53 @@
                 android:background="@color/purple"
                 app:srcCompat="@drawable/ic_minus_circle_24" />
         </LinearLayout>
+
+
         <TextView
-            android:id="@+id/tvHallEditPleaseChoose"
+            android:id="@+id/tvHallEditIncluded"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="נא לבחור"/>
+            android:text="מתוך"/>
+
+        <LinearLayout
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imHallEditPlusChooseCountAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_plus_circle_24" />
+            <TextView
+                android:id="@+id/tvHallEditChooseCountAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:text="0"/>
+            <ImageView
+                android:id="@+id/imHallEditMinusChooseCountAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/purple"
+                app:srcCompat="@drawable/ic_minus_circle_24" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tvHallEditIncludedInPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=" שכלולים במחיר."/>
     </LinearLayout>
     <TextView
         android:id="@+id/tvHallEditInAdditionThere"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="בנוסף קיים אפשרות לבחור ___ בתוספת תשלום"/>
+        android:text="בנוסף קיים אפשרות לבחור בתוספת תשלום"/>
 
     <LinearLayout
         android:layout_width="match_parent"

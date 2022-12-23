@@ -40,8 +40,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
     String hourChoice = "אירוע ערב";
     String dateEvent = "";
     String emailClient1;
-    int countInvited;
-    int price ;
+    long countInvited;
+    long price ;
     String lastName;
     public EventsAdapter(Context context, List<Event> events) {
         this.context = context;

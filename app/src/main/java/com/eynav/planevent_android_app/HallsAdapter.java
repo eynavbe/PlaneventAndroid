@@ -3,6 +3,7 @@ package com.eynav.planevent_android_app;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -13,9 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -89,14 +92,60 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                                     shareType.edit().putString("type", "Client").commit();
                                     itemView.getContext().startActivity(homeHall);
                                 }
+                                if (!emailClient2.equals(emailClient) && !emailClient1.equals(emailClient)){
+                                    AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                            .setTitle("לא רשום")
+                                            .setMessage("אתה לא רשום אצל האולם")
+                                            .setIcon(R.drawable.ic_baseline_delete_24)
+                                            .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                                }
+                                            });
+
+                                    builderDelete.show();
+                                }
+
                             }
 
                         } else {
 //                            Log.w(TAG, "Error getting documents.", task.getException());
                             System.out.println("Error getting documents.");
                             System.out.println(task.getException().toString());
+                            AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                    .setTitle("לא רשום")
+                                    .setMessage("אתה לא רשום אצל האולם")
+                                    .setIcon(R.drawable.ic_baseline_delete_24)
+                                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                        }
+                                    });
+
+                            builderDelete.show();
                         }
-                    }});
+                    }}).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                .setTitle("לא רשום")
+                                .setMessage("אתה לא רשום אצל האולם")
+                                .setIcon(R.drawable.ic_baseline_delete_24)
+                                .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                    }
+                                });
+
+                        builderDelete.show();
+                    }
+                });
     }
     @Override
     public int getItemCount() {

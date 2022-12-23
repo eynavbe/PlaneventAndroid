@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterHallActivity">
+
+    <TextView
+        android:id="@+id/idManagRgtrHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="הרשמה"
+        android:textAlignment="center"
+        android:textColor="@color/purple"
+        android:textSize="25dp" />
+
+    <EditText
+        android:id="@+id/idHallName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idManagRgtrHeader"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Hall name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/idAreaHall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idHallName"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Hall area"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/idNumberInvtManag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idAreaHall"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Maximum number of people in the hall"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/idManagePhoneNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idNumberInvtManag"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Phone number"
+        android:inputType="phone" />
+
+    <!--edit text for user name-->
+    <EditText
+        android:id="@+id/idManagMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idManagePhoneNum"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/passwordManagTil"
+        android:layout_below="@id/idManagMail"
+        app:passwordToggleEnabled="true">
+        <!--edit text for user password-->
+        <EditText
+            android:id="@+id/idManagPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--button to register our new user-->
+    <Button
+        android:id="@+id/idBtnManagRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordManagTil"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="הרשמה"
+        android:backgroundTint="@color/purple"/>
+
+
+    <TextView
+        android:id="@+id/idTxtSignupManag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idBtnManagRegister"
+        android:layout_marginTop="8dp"
+        android:text="Have an account?"
+        android:textAlignment="center"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/idClicktxtSignupManag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTxtSignupManag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:text="Click here"
+        android:textAlignment="center"
+        android:textSize="15dp" />
+
+</RelativeLayout>

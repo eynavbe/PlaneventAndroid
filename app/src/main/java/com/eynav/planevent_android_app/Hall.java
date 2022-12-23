@@ -1,14 +1,16 @@
 package com.eynav.planevent_android_app;
 
 public class Hall {
-    String nameHall, hallImage,hallArea;
-    Integer hallCountPeople;
+    String nameHall, hallImage,hallArea,email,phoneNum;
+    String hallCountPeople;
 
-    public Hall(String nameHall, String hallImage, String hallArea, Integer hallCountPeople) {
+    public Hall(String nameHall, String hallImage, String hallArea, String hallCountPeople, String email, String phoneNum) {
         this.nameHall = nameHall;
         this.hallImage = hallImage;
         this.hallArea = hallArea;
         this.hallCountPeople = hallCountPeople;
+        this.phoneNum = phoneNum;
+        this.email = email;
     }
 
     public String getNameHall() {
@@ -35,12 +37,28 @@ public class Hall {
         this.hallArea = hallArea;
     }
 
-    public int getHallCountPeople() {
+    public String getHallCountPeople() {
         return hallCountPeople;
     }
 
-    public void setHallCountPeople(Integer hallCountPeople) {
+    public void setHallCountPeople(String hallCountPeople) {
         this.hallCountPeople = hallCountPeople;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     @Override

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SingupClientActivity">
+
+
+    <!--text view for heading-->
+    <TextView
+        android:id="@+id/idClntSingupHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="כניסה"
+        android:textAlignment="center"
+        android:textColor="@color/purple"
+        android:textSize="25dp" />
+
+    <!--edit text for user name-->
+    <EditText
+        android:id="@+id/idsingupClientMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idClntSingupHeader"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Email "
+        android:inputType="textEmailAddress" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/passwordSingupClntTil"
+        android:layout_below="@id/idsingupClientMail"
+        app:passwordToggleEnabled="true">
+        <!--edit text for user password-->
+        <EditText
+            android:id="@+id/idClientSingupPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--button to register our new user-->
+    <Button
+        android:id="@+id/idBtnClientsingup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordSingupClntTil"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/purple"
+        android:text="כניסה"
+        android:textAllCaps="false" />
+
+
+    <TextView
+        android:id="@+id/idTxtSingupClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idBtnClientsingup"
+        android:layout_marginTop="9dp"
+        android:text="Dont have an account?"
+        android:textAlignment="center"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/idClicktxtRegisterClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTxtSingupClient"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="-254dp"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:text="Click here"
+        android:textAlignment="center"
+        android:textSize="15dp" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btnSignupGoogleClnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idClicktxtRegisterClient"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,7 +22,7 @@ public class ChooseHall extends AppCompatActivity {
     RecyclerView rvListedHalls;
     List<Hall> halls = new ArrayList<>();
     HallsAdapter hallAdapter;
-
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +31,12 @@ public class ChooseHall extends AppCompatActivity {
         rvListedHalls = findViewById(R.id.rvListedHalls);
         Intent intent = getIntent();
         String emailClient = intent.getStringExtra("emailClient");
-
-        halls.add(new Hall("aaaa","aaaa","tel aviv",888));
+        context =this;
+//        halls.add(new Hall("aaaa","aaaa","tel aviv",888));
         readHallsFromFirebase(emailClient);
         rvListedHalls.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
-        hallAdapter = new HallsAdapter(this.getApplicationContext(),halls, emailClient);
+
+        hallAdapter = new HallsAdapter(this,halls, emailClient);
         rvListedHalls.setAdapter(hallAdapter);
     }
 
@@ -49,16 +51,18 @@ public class ChooseHall extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 System.out.println(document.getId());
 
-                                String nameHall = String.valueOf(document.getData().get("nameHall"));
+                                String nameHall = String.valueOf(document.getData().get("hallName"));
                                 String hallImage = String.valueOf(document.getData().get("hallImage"));
                                 String hallArea = String.valueOf(document.getData().get("hallArea"));
-                                Integer hallCountPeople = (Integer)(document.getData().get("hallCountPeople"));
-                                Hall hall = new Hall(nameHall,hallImage,hallArea,hallCountPeople);
+                                String hallCountPeople = (String)(document.getData().get("maxHallPeople"));
+                                String email = String.valueOf(document.getData().get("email"));
+                                String phoneNum = String.valueOf(document.getData().get("phoneNum"));
+                                Hall hall = new Hall(nameHall,hallImage,hallArea,hallCountPeople,email,phoneNum);
                                 halls.add(hall);
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                             rvListedHalls.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            hallAdapter = new HallsAdapter(getApplicationContext(),halls, emailClient);
+                            hallAdapter = new HallsAdapter(context,halls, emailClient);
                             rvListedHalls.setAdapter(hallAdapter);
                         } else {
 //                            Log.w(TAG, "Error getting documents.", task.getException());

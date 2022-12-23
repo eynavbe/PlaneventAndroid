@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,7 +56,7 @@ public class EventFragment extends Fragment {
     String dateEvent = "";
     boolean test = true;
     SharedPreferences shareType;
-
+    SharedPreferences shareName;
     String[] type = {"סוג אירוע", "חתונה", "בת מצווה",
             "בר מצווה", "ברית מילה",
             "עסקים", "אחר"};
@@ -63,6 +64,7 @@ public class EventFragment extends Fragment {
     String typeChoice = "סוג אירוע";
     String hourChoice = "אירוע ערב";
     String typePage;
+    String nameUser;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,6 +72,9 @@ public class EventFragment extends Fragment {
 
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
         typePage = shareType.getString("type", "default if empty");
+
+        shareName = getContext().getSharedPreferences("name", MODE_PRIVATE);
+        nameUser = shareName.getString("name", "default if empty");
         if (typePage.equals("Hall")){
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("אירועים");
             return inflater.inflate(R.layout.fragment_hall_event, container, false);
@@ -223,7 +228,7 @@ public class EventFragment extends Fragment {
     private void readEventsFromFirebase() {
         List <Event> events = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall").document("name___").collection("events")
+        db.collection("hall").document(nameUser).collection("events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -233,8 +238,8 @@ public class EventFragment extends Fragment {
                                 System.out.println(document.getId());
                                 String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
                                 String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
-                                Integer countInvited = (Integer)(document.getData().get("countInvited"));
-                                Integer price = (Integer)(document.getData().get("price"));
+                                Long countInvited = (Long)(document.getData().get("countInvited"));
+                                Long price = (Long)(document.getData().get("price"));
                                 String typeEvent = String.valueOf(document.getData().get("typeEvent"));
                                 String dateEvent = String.valueOf(document.getData().get("dateEvent"));
                                 String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
@@ -271,7 +276,10 @@ public class EventFragment extends Fragment {
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
         System.out.println(event1);
-        db.collection("hall").document("name___").collection("events").document(event1.getDateEvent())
+        String date = event1.getDateEvent();
+        date = date.replaceAll("/","");
+        String eventname = event1.getLastNameEvent()+date;
+        db.collection("hall").document(nameUser).collection("events").document(eventname)
                 .set(event)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

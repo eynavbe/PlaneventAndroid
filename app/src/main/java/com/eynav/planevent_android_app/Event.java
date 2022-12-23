@@ -7,10 +7,10 @@ import android.widget.TextView;
 public class Event {
     String emailClient1;
     String emailClient2;
-    int countInvited, price;
+    long countInvited, price;
     String typeEvent, dateEvent, lastNameEvent, hourEvent;
 
-    public Event(String emailClient1, String emailClient2, int countInvited, int price, String typeEvent, String dateEvent, String lastNameEvent, String hourEvent) {
+    public Event(String emailClient1, String emailClient2, long countInvited, long price, String typeEvent, String dateEvent, String lastNameEvent, String hourEvent) {
         this.emailClient1 = emailClient1;
         this.emailClient2 = emailClient2;
         this.countInvited = countInvited;
@@ -21,11 +21,11 @@ public class Event {
         this.hourEvent = hourEvent;
     }
 
-    public int getCountInvited() {
+    public long getCountInvited() {
         return countInvited;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 
