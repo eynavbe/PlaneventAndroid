@@ -34,6 +34,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             />
+        <CheckBox
+            android:id="@+id/cbInProductEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="נכלל במחיר?" />
         <EditText
             android:id="@+id/etPriceProductEdit"
             android:hint="מחיר מוצר"

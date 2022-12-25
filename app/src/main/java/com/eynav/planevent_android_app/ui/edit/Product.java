@@ -2,17 +2,41 @@ package com.eynav.planevent_android_app.ui.edit;
 
 public class Product {
     String name;
-    int price;
+    Long price;
+    Boolean inPrice;
+    Long priceClient;
     String image;
-    boolean chooseThis;
+    Boolean chooseThis;
     public Product() {
     }
 
-    public Product(String name, int price, String image, boolean chooseThis) {
+    public Product(String name, Long price, Boolean inPrice, Long priceClient, String image, Boolean chooseThis) {
         this.name = name;
         this.price = price;
+        this.inPrice = inPrice;
+        this.priceClient = priceClient;
         this.image = image;
         this.chooseThis = chooseThis;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    public Boolean isInPrice() {
+        return inPrice;
+    }
+
+    public void setInPrice(Boolean inPrice) {
+        this.inPrice = inPrice;
+    }
+
+    public Long getPriceClient() {
+        return priceClient;
+    }
+
+    public void setPriceClient(Long priceClient) {
+        this.priceClient = priceClient;
     }
 
     public String getName() {
@@ -23,13 +47,10 @@ public class Product {
         this.name = name;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
     public String getImage() {
         return image;
@@ -39,11 +60,11 @@ public class Product {
         this.image = image;
     }
 
-    public boolean isChooseThis() {
+    public Boolean isChooseThis() {
         return chooseThis;
     }
 
-    public void setChooseThis(boolean chooseThis) {
+    public void setChooseThis(Boolean chooseThis) {
         this.chooseThis = chooseThis;
     }
 

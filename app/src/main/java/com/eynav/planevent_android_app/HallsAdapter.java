@@ -30,6 +30,7 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
     Context context;
     List<Hall> halls;
     String emailClient;
+    boolean test = false;
     public HallsAdapter(Context context, List<Hall> events, String emailClient) {
         this.context = context;
         this.halls = events;
@@ -61,59 +62,54 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId());
                                 String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
                                 String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
                                 if (emailClient1.equals(emailClient)){
-                                    // get or create SharedPreferences
-                                    SharedPreferences shareType = context.getSharedPreferences("type", MODE_PRIVATE);
-
+                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
                                     // save your string in SharedPreferences
-                                    shareType.edit().putString("hall", hallName).commit();
+                                    shareHall.edit().putString("hall", hallName).commit();
                                     Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
                                     // get or create SharedPreferences
-                                    shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
-
+                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
                                     // save your string in SharedPreferences
                                     shareType.edit().putString("type", "Client").commit();
                                     itemView.getContext().startActivity(homeHall);
+                                    test = true;
                                 }
                                 if (emailClient2.equals(emailClient)){
                                     // get or create SharedPreferences
-                                    SharedPreferences shareType = context.getSharedPreferences("type", MODE_PRIVATE);
+                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
 
                                     // save your string in SharedPreferences
-                                    shareType.edit().putString("hall", hallName).commit();
+                                    shareHall.edit().putString("hall", hallName).commit();
                                     Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
                                     // get or create SharedPreferences
-                                    shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
 
                                     // save your string in SharedPreferences
                                     shareType.edit().putString("type", "Client").commit();
                                     itemView.getContext().startActivity(homeHall);
+                                    test = true;
                                 }
-                                if (!emailClient2.equals(emailClient) && !emailClient1.equals(emailClient)){
-                                    AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
-                                            .setTitle("לא רשום")
-                                            .setMessage("אתה לא רשום אצל האולם")
-                                            .setIcon(R.drawable.ic_baseline_delete_24)
-                                            .setPositiveButton("כן", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+
+                            if (!test){
+                                AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                        .setTitle("לא רשום")
+                                        .setMessage("אתה לא רשום אצל האולם")
+                                        .setIcon(R.drawable.ic_baseline_delete_24)
+                                        .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                                                }
-                                            });
+                                            }
+                                        });
 
-                                    builderDelete.show();
-                                }
-
+                                builderDelete.show();
                             }
 
                         } else {
-//                            Log.w(TAG, "Error getting documents.", task.getException());
-                            System.out.println("Error getting documents.");
-                            System.out.println(task.getException().toString());
                             AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                                     .setTitle("לא רשום")
                                     .setMessage("אתה לא רשום אצל האולם")
@@ -154,21 +150,17 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
 
     public class HallsAdapterHolder extends RecyclerView.ViewHolder {
         Hall hall;
-        ImageView imHallImage;
         TextView tvHallName, tvHallArea, tvHallCountPeople;
         LinearLayout cartHall;
 
         public HallsAdapterHolder(View itemView) {
             super(itemView);
-            imHallImage = itemView.findViewById(R.id.imHallImage);
             tvHallName = itemView.findViewById(R.id.tvHallName);
             tvHallArea = itemView.findViewById(R.id.tvHallArea);
             tvHallCountPeople = itemView.findViewById(R.id.tvHallCountPeople);
             cartHall = itemView.findViewById(R.id.cartHall);
             itemView.setOnClickListener((v) ->{
                 CheckIfCustomerRegisteredToHallFromFirebase(hall.getNameHall(),itemView);
-
-
             });
         }
     }

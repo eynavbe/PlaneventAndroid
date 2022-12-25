@@ -120,9 +120,6 @@ public class SingupClientActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-//                            Toast.makeText(SingupClientActivity.this, "Sign In... ", Toast.LENGTH_SHORT).show();
-//                            startActivity(new Intent(SingupClientActivity.this, choosingClientOption.class));
                             readClientFromFirebase(email);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -142,7 +139,6 @@ public class SingupClientActivity extends AppCompatActivity {
         Activity activity = this;
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        List<Event> events = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("client")
                 .get()
@@ -151,20 +147,14 @@ public class SingupClientActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId());
-
                                 if (document.getId().equals(email)){
                                     test = true;
-                                    SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+                                    SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                                    shareType.edit().putString("name", email).commit();
+                                    shareType.edit().putString("emailClient", email).commit();
                                     startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
-
-//                            startActivity(new Intent(RegisterClientActivity.this, choosingClientOption.class));
                                     finish();
                                 }
-//                                String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
-
                             }
                             loadingdialog.dismissdialog();
 
@@ -193,7 +183,6 @@ public class SingupClientActivity extends AppCompatActivity {
 
                            }
                         } else {
-//                            Log.w(TAG, "Error getting documents.", task.getException());
                             System.out.println("Error getting documents.");
                             System.out.println(task.getException().toString());
                         }
@@ -203,7 +192,6 @@ public class SingupClientActivity extends AppCompatActivity {
                 });
     }
     private void addClientToFirebase(String email) {
-        System.out.println("addEventToFirebase");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         Map<String, Object> client = new HashMap<>();
@@ -218,15 +206,12 @@ public class SingupClientActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         System.out.println("DocumentSnapshot added");
-//                        dialog.dismiss();
                         loadingdialog.dismissdialog();
-                        SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+                        SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                        shareType.edit().putString("name", email).commit();
+                        shareType.edit().putString("emailClient", email).commit();
 
                         startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
-
-//                            startActivity(new Intent(RegisterClientActivity.this, choosingClientOption.class));
                         finish();
                     }
                 })
@@ -260,8 +245,6 @@ public class SingupClientActivity extends AppCompatActivity {
     }
 
     private void FirebaseAuthWithGoogle(GoogleSignInAccount account) {
-//        String personEmail = account.getEmail();
-//        System.out.println("emailllllll   "+personEmail);
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -270,7 +253,6 @@ public class SingupClientActivity extends AppCompatActivity {
                         if (task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(SingupClientActivity.this, ""+user.getEmail(), Toast.LENGTH_SHORT).show();
-//                            startActivity(new Intent(SingupClientActivity.this, choosingClientOption.class));
                             readClientFromFirebase(user.getEmail());
 
                         }

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eynav.planevent_android_app.Event;
 import com.eynav.planevent_android_app.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdapterHolder>{
     private List<Event> events;
@@ -43,9 +49,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
     long countInvited;
     long price ;
     String lastName;
-    public EventsAdapter(Context context, List<Event> events) {
+    String nameUser;
+    public EventsAdapter(Context context, List<Event> events, String nameUser) {
         this.context = context;
         this.events = events;
+        this.nameUser = nameUser;
     }
     @NonNull
     @Override
@@ -61,7 +69,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
         holder.tvTypeEvent.setText(event.getTypeEvent());
         holder.tvDateEvent.setText(event.getDateEvent());
         holder.tvLastNameEvent.setText(event.getLastNameEvent());
-
         holder.event = event;
         holder.imUpdateEvent.setOnClickListener(l ->{
             Dialog dialogUpdateEvent = new Dialog(context);
@@ -84,15 +91,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
             etCountInvited.setText(String.valueOf(event.getCountInvited()));
             etPrice.setText(String.valueOf(event.getPrice()));
             etLastName.setText(event.getLastNameEvent());
-             emailClient1 = event.getEmailClient1();
-             countInvited =event.getCountInvited();
-             price = event.getPrice();
-             lastName =event.getLastNameEvent();
+            emailClient1 = event.getEmailClient1();
+            countInvited =event.getCountInvited();
+            price = event.getPrice();
+            lastName =event.getLastNameEvent();
             dateEvent = event.getDateEvent();
             typeChoice = event.getTypeEvent();
             hourChoice = event.getHourEvent();
-
-
             spTypeEvent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -108,7 +113,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
             ArrayAdapter adType = new ArrayAdapter(context, android.R.layout.simple_spinner_item, type);
             adType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spTypeEvent.setAdapter(adType);
-
             spHourEvent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -148,6 +152,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
                 datePickerDialog.show();
             });
             btnAddUpdateEvent.setOnClickListener(h -> {
+
+                saveDeleteProduct(holder.event, 0 , false);
                 test = true;
 
                 if (!etEmailClient1.getText().toString().equals("")) {
@@ -187,9 +193,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
                 String emailClient2 = etEmailClient2.getText().toString();
                 if (test){
                     Event event1 = new Event(emailClient1, emailClient2,countInvited,price,typeChoice,dateEvent,lastName,hourChoice);
+                    addEventToFirebase(event1);
                     events.set(position,event1);
                     notifyItemChanged(position);
-
                     dialogUpdateEvent.dismiss();
                 }
             });
@@ -203,9 +209,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            events.remove(position);
+                            saveDeleteProduct(holder.event,position, true);
 
-                            notifyItemRemoved(position);
 
                         }
                     })
@@ -219,8 +224,62 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
             builderDelete.show();
         });
     }
+    private void addEventToFirebase(Event event1) {
+        System.out.println("addEventToFirebase");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> event = new HashMap<>();
+        event.put("emailClient1", event1.getEmailClient1());
+        event.put("emailClient2", event1.getEmailClient2());
+        event.put("countInvited", event1.getCountInvited());
+        event.put("price", event1.getPrice());
+        event.put("typeEvent", event1.getTypeEvent());
+        event.put("dateEvent", event1.getDateEvent());
+        event.put("lastNameEvent", event1.getLastNameEvent());
+        event.put("hourEvent", event1.getHourEvent());
+        String date = event1.getDateEvent();
+        date = date.replaceAll("/","");
+        String eventname = event1.getLastNameEvent()+date;
+        db.collection("hall").document(nameUser).collection("events").document(eventname)
+                .set(event)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("DocumentSnapshot added");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error adding document");
+                    }
+                });
 
+    }
+    public void saveDeleteProduct(Event event1, int position, boolean delete){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String date = event1.getDateEvent();
+        date = date.replaceAll("/","");
+        String eventname = event1.getLastNameEvent()+date;
+        db.collection("hall").document(nameUser).collection("events").document(eventname)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (delete){
+                            events.remove(position);
 
+                            notifyItemRemoved(position);
+                        }
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("error",e.getMessage());
+                    }
+                });
+    }
 
     @Override
     public int getItemCount() {

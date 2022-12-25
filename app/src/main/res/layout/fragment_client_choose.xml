@@ -33,7 +33,7 @@
         android:id="@+id/tvClientChooseInAdditionThere"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="בנוסף קיים אפשרות לבחור ___ בתוספת תשלום"/>
+        android:text="בנוסף קיים אפשרות לבחור בתוספת תשלום"/>
 
     <LinearLayout
         android:layout_width="match_parent"

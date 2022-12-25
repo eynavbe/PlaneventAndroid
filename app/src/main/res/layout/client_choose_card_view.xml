@@ -30,15 +30,29 @@
             android:text="name"
             android:textSize="16sp"
             android:textColor="@color/black"/>
-        <TextView
-            android:id="@+id/tvClientProductPrice"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="price"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="מחיר: "
+                android:textSize="14sp"
+                android:textColor="@color/gray"/>
+            <TextView
+                android:id="@+id/tvClientProductPrice"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="price"
+                android:textSize="14sp"
+                android:textColor="@color/gray"/>
+        </LinearLayout>
+
 
         <CheckBox
             android:id="@+id/ctvClientChooseProduct"

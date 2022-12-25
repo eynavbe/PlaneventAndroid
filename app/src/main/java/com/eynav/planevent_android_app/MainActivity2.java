@@ -56,17 +56,10 @@ public class MainActivity2 extends AppCompatActivity {
                 startActivity(new Intent(MainActivity2.this, RegisterHallActivity.class));
             }
             else{
-                startActivity(new Intent(MainActivity2.this, MainActivity.class));
-
-//                startActivity(new Intent(MainActivity2.this, SignupHallActivity.class));
+                startActivity(new Intent(MainActivity2.this, SignupHallActivity.class));
             }
-//            Intent homeHall= new Intent(this, MainActivity.class);
-//
-//            this.startActivity(homeHall);
         });
         btnClient.setOnClickListener(l ->{
-//            homeHall.putExtra("email", emailClient);
-//            TODO homeHall.putExtra("email", emailClient);
             // get or create SharedPreferences
             shareType = getSharedPreferences("type", MODE_PRIVATE);
 
@@ -78,13 +71,8 @@ public class MainActivity2 extends AppCompatActivity {
                 startActivity(new Intent(MainActivity2.this, RegisterClientActivity.class));
             }
             else{
-//                startActivity(new Intent(MainActivity2.this, SingupClientActivity.class));
-                startActivity(new Intent(MainActivity2.this, ChooseHall.class));
-
+                startActivity(new Intent(MainActivity2.this, SingupClientActivity.class));
             }
-//            Intent homeHall= new Intent(this, ChooseHall.class);
-//
-//            this.startActivity(homeHall);
         });
     }
 }

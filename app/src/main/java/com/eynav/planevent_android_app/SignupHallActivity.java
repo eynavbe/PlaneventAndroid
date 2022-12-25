@@ -85,13 +85,6 @@ public class SignupHallActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Toast.makeText(SignupHallActivity.this, "Sign In... ", Toast.LENGTH_SHORT).show();
-//                            //TODO go to the next activity class
-//                            startActivity(new Intent(SignupHallActivity.this, MainActivity.class));
-//
-////                            startActivity(new Intent(SignupHallActivity.this, ChooseManagEditActivity.class));
-//                            finish();
                             readHallFromFirebase(email);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -130,8 +123,6 @@ public class SignupHallActivity extends AppCompatActivity {
                                     // save your string in SharedPreferences
                                     shareType.edit().putString("name", hallName).commit();
                                     startActivity(new Intent(SignupHallActivity.this, MainActivity.class));
-
-//                            startActivity(new Intent(RegisterClientActivity.this, choosingClientOption.class));
                                     finish();
                                 }
                             }
@@ -163,7 +154,6 @@ public class SignupHallActivity extends AppCompatActivity {
 
                             }
                         } else {
-//                            Log.w(TAG, "Error getting documents.", task.getException());
                             System.out.println("Error getting documents.");
                             System.out.println(task.getException().toString());
                         }

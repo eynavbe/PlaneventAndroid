@@ -112,33 +112,20 @@ public class RegisterHallActivity extends AppCompatActivity {
         hall.put("maxHallPeople", maxHallPeople.getText().toString());
         hall.put("phoneNum", phoneNum.getText().toString());
         hall.put("email", email.getText().toString());
-
         Activity activity = this;
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-//        hallName = findViewById(R.id.idHallName);
-//        hallArea = findViewById(R.id.idAreaHall);
-//        maxHallPeople = findViewById(R.id.idNumberInvtManag);
-//        phoneNum = findViewById(R.id.idManagePhoneNum);
-//        email = findViewById(R.id.idManagMail);
-//        password= findViewById(R.id.idManagPassword);
-//        btnRegister = findViewById(R.id.idBtnManagRegister);
-//        clicktxtSignupManag = findViewById(R.id.idClicktxtSignupManag);
         db.collection("hall").document(hallName.getText().toString())
                 .set(hall)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        System.out.println("DocumentSnapshot added");
-//                        dialog.dismiss();
                         loadingdialog.dismissdialog();
                         SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
 
                         // save your string in SharedPreferences
                         shareType.edit().putString("name", hallName.getText().toString()).commit();
                         startActivity(new Intent(RegisterHallActivity.this, MainActivity.class));
-
-//                            startActivity(new Intent(RegisterHallActivity.this, ChooseManagEditActivity.class));
                         finish();
                     }
                 })

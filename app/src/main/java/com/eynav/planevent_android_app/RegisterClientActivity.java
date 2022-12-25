@@ -126,8 +126,6 @@ public class RegisterClientActivity extends AppCompatActivity {
     }
 
     private void FirebaseAuthWithGoogle(GoogleSignInAccount account) {
-//        String personEmail = account.getEmail();
-//        System.out.println("emailllllll   "+personEmail);
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -135,8 +133,6 @@ public class RegisterClientActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            Toast.makeText(RegisterClientActivity.this, ""+user.getEmail(), Toast.LENGTH_SHORT).show();
-//                            startActivity(new Intent(SingupClientActivity.this, choosingClientOption.class))
                             addClientToFirebase(user.getEmail());
 
                         }
@@ -161,11 +157,6 @@ public class RegisterClientActivity extends AppCompatActivity {
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 FirebaseAuthWithGoogle(account);
-
-
-
-
-
             } catch (ApiException e) {
                 Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -188,16 +179,12 @@ public class RegisterClientActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             System.out.println("DocumentSnapshot added");
-//                        dialog.dismiss();
                             loadingdialog.dismissdialog();
-                            SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+                            SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                            shareType.edit().putString("name", email).commit();
+                            shareType.edit().putString("emailClient", email).commit();
 
                             startActivity(new Intent(RegisterClientActivity.this, ChooseHall.class));
-
-
-//                            startActivity(new Intent(RegisterClientActivity.this, choosingClientOption.class));
                             finish();
                         }
                     })

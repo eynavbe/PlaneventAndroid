@@ -1,14 +1,10 @@
 package com.eynav.planevent_android_app.ui.edit;
 
-import static android.content.Context.MODE_PRIVATE;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,28 +15,19 @@ import com.eynav.planevent_android_app.R;
 public class MenuEditActivity extends Fragment {
 
     Button buffe, salades, firstDishes, secondDishes, deserts;
-
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-
-
             return inflater.inflate(R.layout.activity_menu_edit, container, false);
-
-
-
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         buffe = view.findViewById(R.id.idBuffeManag);
         salades = view.findViewById(R.id.idSaladsManag);
         firstDishes = view.findViewById(R.id.idFirstDishManag);
         secondDishes = view.findViewById(R.id.idSecondDishManag);
         deserts = view.findViewById(R.id.idDesertManag);
-
         buffe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,8 +37,6 @@ public class MenuEditActivity extends Fragment {
                 args.putString("menuEdit", "בופה");
                 myFragment.setArguments(args);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
-
-//                startActivity(new Intent(MenuEditActivity.this, ChooseMenuActivity.class));
             }
         });
         salades.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +48,6 @@ public class MenuEditActivity extends Fragment {
                 args.putString("menuEdit", "סלטים");
                 myFragment.setArguments(args);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
-
-//                startActivity(new Intent(MenuEditActivity.this, ChooseMenuActivity.class));
             }
         });
 
@@ -78,7 +61,6 @@ public class MenuEditActivity extends Fragment {
                 myFragment.setArguments(args);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
 
-//                startActivity(new Intent(MenuEditActivity.this, ChooseMenuActivity.class));
             }
         });
         secondDishes.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +72,6 @@ public class MenuEditActivity extends Fragment {
                 args.putString("menuEdit", "מנות עיקריות");
                 myFragment.setArguments(args);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
-
-//                startActivity(new Intent(MenuEditActivity.this, ChooseMenuActivity.class));
             }
         });
         deserts.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +83,6 @@ public class MenuEditActivity extends Fragment {
                 args.putString("menuEdit", "קינוחים");
                 myFragment.setArguments(args);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
-
-//                startActivity(new Intent(MenuEditActivity.this, ChooseMenuActivity.class));
             }
         });
     }

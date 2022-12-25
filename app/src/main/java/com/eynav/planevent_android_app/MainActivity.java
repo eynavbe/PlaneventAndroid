@@ -105,18 +105,5 @@ public class MainActivity extends AppCompatActivity {
             return true; // return true;
 
         });
-
-//        NavHostFragment finalHost = NavHostFragment.create(R.navigation.mobile_navigation);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.nav_host_fragment_activity_main, finalHost)
-//                .setPrimaryNavigationFragment(finalHost) // equivalent to app:defaultNavHost="true"
-//                .commit();
-
-        Intent integer = getIntent();
-        String type = integer.getStringExtra("type");
-
-        System.out.println(type);
     }
-
-
 }

@@ -6,10 +6,8 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -200,15 +196,10 @@ public class EventFragment extends Fragment {
                             test = false;
                         }
                     }
-                    System.out.println(test);
                     String emailClient2 = etEmailClient2.getText().toString();
                     if (test) {
-                        System.out.println("_______");
                         Event event1 = new Event(emailClient1, emailClient2, countInvited, price, typeChoice, dateEvent, lastName, hourChoice);
-                        events.add(event1);
                         addEventToFirebase(event1);
-                        eventsAdapter.notifyItemInserted(events.size() - 1);
-                        rvEvent.scrollToPosition(events.size() - 1);
                         dialogAddEvent.dismiss();
                     }
 
@@ -217,7 +208,7 @@ public class EventFragment extends Fragment {
             });
 
             rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
-            eventsAdapter = new EventsAdapter(getContext(), events);
+            eventsAdapter = new EventsAdapter(getContext(), events, nameUser);
             rvEvent.setAdapter(eventsAdapter);
         }
 
@@ -226,7 +217,6 @@ public class EventFragment extends Fragment {
         }
 
     private void readEventsFromFirebase() {
-        List <Event> events = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("hall").document(nameUser).collection("events")
                 .get()
@@ -235,7 +225,6 @@ public class EventFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId());
                                 String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
                                 String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
                                 Long countInvited = (Long)(document.getData().get("countInvited"));
@@ -246,23 +235,18 @@ public class EventFragment extends Fragment {
                                 String hourEvent = String.valueOf(document.getData().get("hourEvent"));
                                 Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
                                 events.add(event);
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                             rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
-                            eventsAdapter = new EventsAdapter(getContext(), events);
+                            eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
                             rvEvent.setAdapter(eventsAdapter);
                         } else {
-//                            Log.w(TAG, "Error getting documents.", task.getException());
                             System.out.println("Error getting documents.");
-                            System.out.println(task.getException().toString());
                         }
                     }});
     }
 
     private void addEventToFirebase(Event event1) {
-        System.out.println("addEventToFirebase");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
         Map<String, Object> event = new HashMap<>();
         event.put("emailClient1", event1.getEmailClient1());
         event.put("emailClient2", event1.getEmailClient2());
@@ -275,7 +259,6 @@ public class EventFragment extends Fragment {
         Activity activity = getActivity();
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        System.out.println(event1);
         String date = event1.getDateEvent();
         date = date.replaceAll("/","");
         String eventname = event1.getLastNameEvent()+date;
@@ -284,8 +267,9 @@ public class EventFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        System.out.println("DocumentSnapshot added");
-//                        dialog.dismiss();
+                        rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
+                        eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
+                        rvEvent.setAdapter(eventsAdapter);
                         loadingdialog.dismissdialog();
                     }
                 })
@@ -293,26 +277,9 @@ public class EventFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         System.out.println("Error adding document");
-                        System.out.println(e.toString());
                     }
                 });
-//        db.collection("hall").document("name___").collection("events")
-//                .add(event)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        System.out.println("DocumentSnapshot added");
-////                        dialog.dismiss();
-//                        loadingdialog.dismissdialog();
-////                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("Error adding document");
-//                    }
-//                });
+
     }
 
     @Override
