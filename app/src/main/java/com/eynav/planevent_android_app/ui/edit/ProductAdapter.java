@@ -113,9 +113,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
                     builderDelete.show();
                 }
             } else {
+                System.out.println(product);
                 product.setChooseThis(false);
+                System.out.println(Integer.parseInt(holder.tvClientProductPrice.getText().toString()));
+                product.setPriceClient(0L);
+
                 if (Integer.parseInt(holder.tvClientProductPrice.getText().toString())> 0){
-                    product.setPriceClient(0L);
+//                    holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
+                    if (product.getPriceClient() != 0){
+                        holder.tvClientProductPrice.setText(String.valueOf(product.getPriceClient()));
+                    }else {
+                        if (product.isInPrice()){
+                            holder.tvClientProductPrice.setText(String.valueOf(0));
+                        }else {
+                            holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
+                        }
+                    }
                 }
                 System.out.println("false");
                 countChoose --;
