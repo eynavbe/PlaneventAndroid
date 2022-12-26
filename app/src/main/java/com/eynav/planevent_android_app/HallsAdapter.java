@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
         holder.tvHallCountPeople.setText(textCountPeople);
 
     }
-    private void CheckIfCustomerRegisteredToHallFromFirebase(String hallName, View itemView) {
+    private void CheckIfCustomerRegisteredToHallFromFirebase(String hallName, View itemView, String hallNumber) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("hall").document(hallName).collection("events")
                 .get()
@@ -96,12 +97,19 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                             if (!test){
                                 AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                                         .setTitle("לא רשום")
-                                        .setMessage("אתה לא רשום אצל האולם")
+                                        .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
                                         .setIcon(R.drawable.ic_baseline_delete_24)
                                         .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                                callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+                                                context.startActivity(callIntent);
 
+                                            }
+                                        }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
 
                                             }
                                         });
@@ -112,12 +120,19 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                         } else {
                             AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                                     .setTitle("לא רשום")
-                                    .setMessage("אתה לא רשום אצל האולם")
+                                    .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
                                     .setIcon(R.drawable.ic_baseline_delete_24)
                                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                            callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+                                            context.startActivity(callIntent);
 
+                                        }
+                                    }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
 
                                         }
                                     });
@@ -129,12 +144,19 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                     public void onFailure(@NonNull Exception e) {
                         AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                                 .setTitle("לא רשום")
-                                .setMessage("אתה לא רשום אצל האולם")
+                                .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
                                 .setIcon(R.drawable.ic_baseline_delete_24)
                                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                        callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+                                        context.startActivity(callIntent);
 
+                                    }
+                                }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
 
                                     }
                                 });
@@ -160,7 +182,7 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
             tvHallCountPeople = itemView.findViewById(R.id.tvHallCountPeople);
             cartHall = itemView.findViewById(R.id.cartHall);
             itemView.setOnClickListener((v) ->{
-                CheckIfCustomerRegisteredToHallFromFirebase(hall.getNameHall(),itemView);
+                CheckIfCustomerRegisteredToHallFromFirebase(hall.getNameHall(),itemView,hall.getPhoneNum());
             });
         }
     }
