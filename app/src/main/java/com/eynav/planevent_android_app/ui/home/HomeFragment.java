@@ -37,18 +37,19 @@ public class HomeFragment extends Fragment {
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
         typePage = shareType.getString("type", "default if empty");
         if (typePage.equals("Hall")){
-            String text1 = "ברוכים הבאים לאפליקציה"+"\n\n";
-            String text2 = "תוכלו לשים את האולם והשירותים שלהם באפליקציה"+"\n\n";
-            String text3 = "הלקוחות שלהם יוכלו לבחור מה הם רוצים באירוע שלהם בנוחות ובאופן מסודר במקום אחד ולהפיק אירוע הכולל כל מה שצריך באפליקציה."+"\n\n";
-            String text4 = "תוכלו לבצע שיתופי פעולה עם עסקים קטנים וכך גם הם יוכלו להנות בעקיפין מהאפליקציה ואתם תהנו מההסכם שלכם עם העסקים. "+"\n\n";
+            String text1 = "ברוכים הבאים ל planevent"+"\n\n";
+            String text2 = "כאן תוכלו לפרסם מה האולם שלכם מציע כדי לשדרג את אירוע ולהפוך אותו לייחודי."+"\n\n";
+            String text3 = "הלקוחות שלכם יראו את השירותים הנוספים שאתם מציעים ויכלו לבחור מה הם רוצים באירוע שלהם בנוחות מירבית."+"\n\n";
+            String text4 = "אנחנו ממליצים ותומכים בשיתופי פעולה עם עסקים קטנים כדי שתוכלו להרחיב את ההיצע שלכם תוך חיזוק הכלכלה הישראלית."+"\n\n";
             String text5 = text1+text2+text3+text4;
             tvWelcome.setText(text5);
         }
         if (typePage.equals("Client")) {
-            String text1="ברוכים הבאים לאפליקציה"+"\n\n";
-            String text2 = "זה המקום לאירגון האירוע שלכם"+"\n\n";
-            String text3 = "אחרי סגירה עם בעל האולם אירוע תקבלו גישה לבחור מה האירוע שלהם יכלול גם מבחינת תפריט וגם מבחינת הדברים הנלווים לאירוע שהאולם מציע."+"\n\n";
-            String text5 = text1+text2+text3;
+            String text1="ברוכים הבאים ל planevent"+"\n\n";
+            String text2 = "פה המקום לתכנן את האירוע שלכם באולם שבחרתם."+"\n\n";
+            String text3 = "לאחר סגירת המקום עם בעל האולם תוכלו לבחור פה בנוחות מתוך מגוון השירותים שיש לאולם להציע."+"\n\n";
+            String text4="החל בתפריט ועד לפרטים הכי קטנים שיהפכו את האירוע שלכם לבלתי נשכח."+"\n\n";
+            String text5 = text1+text2+text3+text4;
             tvWelcome.setText(text5);
         }
 
