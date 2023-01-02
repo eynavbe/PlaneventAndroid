@@ -29,6 +29,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         this.context = context;
         this.products = products;
         this.countInPrice = countInPrice;
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).isInPrice() && products.get(i).isChooseThis()){
+                this.countInPrice++;
+            }
+        }
     }
     @NonNull
     @Override
@@ -64,9 +69,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
 
         holder.ctvClientChooseProduct.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (holder.ctvClientChooseProduct.isChecked()) {
-                product.setChooseThis(true);
-                System.out.println("true");
-                countChoose ++;
                 if (!product.isInPrice()){
                     AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                             .setTitle("בתוספת תשלום")
@@ -75,43 +77,53 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
                             .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    product.setChooseThis(true);
 //                                    holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
                                     product.setPriceClient(product.getPrice());
+                                    countChoose ++;
+
 
                                 }
                             })
                             .setNegativeButton("לא", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    product.setChooseThis(false);
                                     holder.ctvClientChooseProduct.setChecked(false);
                                 }
                             });
 
                     builderDelete.show();
+                }else {
+
+                    countChoose ++;
+                    if (countChoose > countInPrice){
+                        AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                .setTitle("בתוספת תשלום")
+                                .setMessage("הגעת לסכום המרבי שכלול במחיר, היית רוצה להוסיף עוד כסף בשביל המוצר הזה?")
+                                .setIcon(R.drawable.ic_baseline_delete_24)
+                                .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
+                                        product.setPriceClient(product.getPrice());
+                                        product.setChooseThis(true);
+                                    }
+                                })
+                                .setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        holder.ctvClientChooseProduct.setChecked(false);
+                                        product.setChooseThis(false);
+                                        countChoose --;
+                                    }
+                                });
+
+                        builderDelete.show();
+                    }
+
                 }
-                if (countChoose > countInPrice){
-                    AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
-                            .setTitle("בתוספת תשלום")
-                            .setMessage("הגעת לסכום המרבי שכלול במחיר, היית רוצה להוסיף עוד כסף בשביל המוצר הזה?")
-                            .setIcon(R.drawable.ic_baseline_delete_24)
-                            .setPositiveButton("כן", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
-                                    product.setPriceClient(product.getPrice());
 
-                                }
-                            })
-                            .setNegativeButton("לא", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    holder.ctvClientChooseProduct.setChecked(false);
-
-                                }
-                            });
-
-                    builderDelete.show();
-                }
             } else {
                 System.out.println(product);
                 product.setChooseThis(false);
