@@ -2,10 +2,12 @@ package com.eynav.planevent_android_app;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -103,8 +108,25 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                                callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
-                                                context.startActivity(callIntent);
+                                                callIntent.setData(Uri.parse("tel:"+hallNumber));
+                                                if (ContextCompat.checkSelfPermission(context,
+                                                        Manifest.permission.CALL_PHONE)
+                                                        != PackageManager.PERMISSION_GRANTED) {
+                                                    AppCompatActivity activity = (AppCompatActivity) context;
+
+                                                    ActivityCompat.requestPermissions(activity,
+                                                            new String[]{Manifest.permission.CALL_PHONE},
+                                                            1);
+
+                                                } else {
+
+                                                    try {
+                                                        context.startActivity(callIntent);
+
+                                                    } catch(SecurityException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
 
                                             }
                                         }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
