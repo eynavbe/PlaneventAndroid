@@ -25,6 +25,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
     Context context;
     int countChoose = 0;
     int countInPrice;
+    boolean noChoose = false;
+
     public ProductAdapter(Context context, List<Product> products, int countInPrice, int countAll) {
         this.context = context;
         this.products = products;
@@ -34,6 +36,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
                 this.countInPrice++;
             }
         }
+        noChoose = false;
+
+    }
+    public ProductAdapter(Context context, List<Product> products) {
+        this.context = context;
+        this.products = products;
+        this.countInPrice = 0;
+        noChoose = true;
     }
     @NonNull
     @Override
@@ -55,8 +65,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
                 holder.tvClientProductPrice.setText(String.valueOf(product.getPrice()));
             }
         }
-
-        holder.ctvClientChooseProduct.setChecked(product.isChooseThis());
+        if (!noChoose){
+            holder.ctvClientChooseProduct.setChecked(product.isChooseThis());
+        }else {
+            holder.ctvClientChooseProduct.setVisibility(View.GONE);
+        }
 
         if (product.getImage() != null){
             Glide.with(context)

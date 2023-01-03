@@ -76,11 +76,17 @@ public class EditChooseFragment extends Fragment {
     TextView tvClientChooseChoosingFewThings;
     RecyclerView rvListClientChoose;
     String emailClient;
+    String from = "";
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
+    public EditChooseFragment(){
 
+    }
+    public EditChooseFragment(String from){
+        this.from = from;
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
@@ -93,8 +99,15 @@ public class EditChooseFragment extends Fragment {
          emailClient = shareName.getString("emailClient", "default if empty");
         activity = getActivity();
         if (typePage.equals("Hall")) {
-            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
-            return inflater.inflate(R.layout.fragment_hall_edit, container, false);
+            if (from.equals("")) {
+                ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
+                return inflater.inflate(R.layout.fragment_hall_edit, container, false);
+
+            }else {
+//                ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("בחירות לקוח");
+                return inflater.inflate(R.layout.fragment_client_choose, container, false);
+            }
+
         } else {
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("בחירות");
             return inflater.inflate(R.layout.fragment_client_choose, container, false);
@@ -106,79 +119,97 @@ public class EditChooseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (typePage.equals("Hall")) {
-            TextView tvNameHallEdit = view.findViewById(R.id.tvNameHallEdit);
-            value = getArguments().getString("menuEdit");
-            String text = "עריכת " + value;
-            tvNameHallEdit.setText(text);
-            imHallEditPlusChooseCountAll = view.findViewById(R.id.imHallEditPlusChooseCountAll);
-            imHallEditMinusChooseCountAll = view.findViewById(R.id.imHallEditMinusChooseCountAll);
-            tvHallEditChooseCountAll = view.findViewById(R.id.tvHallEditChooseCountAll);
-            imHallEditPlusChooseFromAll = view.findViewById(R.id.imHallEditPlusChooseFromAll);
-            imHallEditMinusChooseFromAll = view.findViewById(R.id.imHallEditMinusChooseFromAll);
-            tvHallEditChooseFromAll = view.findViewById(R.id.tvHallEditChooseFromAll);
-            imHallEditPlusChooseCountAll.setOnClickListener(l -> {
-                tvHallEditChooseCountAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) + 1));
-            });
-            imHallEditMinusChooseCountAll.setOnClickListener(l -> {
-                if (Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) > 0) {
-                    tvHallEditChooseCountAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) - 1));
-                }
-            });
-            imHallEditPlusChooseFromAll.setOnClickListener(l -> {
-                tvHallEditChooseFromAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) + 1));
+            if (from.equals("")) {
+                TextView tvNameHallEdit = view.findViewById(R.id.tvNameHallEdit);
+                value = getArguments().getString("menuEdit");
+                String text = "עריכת " + value;
+                tvNameHallEdit.setText(text);
+                imHallEditPlusChooseCountAll = view.findViewById(R.id.imHallEditPlusChooseCountAll);
+                imHallEditMinusChooseCountAll = view.findViewById(R.id.imHallEditMinusChooseCountAll);
+                tvHallEditChooseCountAll = view.findViewById(R.id.tvHallEditChooseCountAll);
+                imHallEditPlusChooseFromAll = view.findViewById(R.id.imHallEditPlusChooseFromAll);
+                imHallEditMinusChooseFromAll = view.findViewById(R.id.imHallEditMinusChooseFromAll);
+                tvHallEditChooseFromAll = view.findViewById(R.id.tvHallEditChooseFromAll);
+                imHallEditPlusChooseCountAll.setOnClickListener(l -> {
+                    tvHallEditChooseCountAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) + 1));
+                });
+                imHallEditMinusChooseCountAll.setOnClickListener(l -> {
+                    if (Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) > 0) {
+                        tvHallEditChooseCountAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseCountAll.getText().toString()) - 1));
+                    }
+                });
+                imHallEditPlusChooseFromAll.setOnClickListener(l -> {
+                    tvHallEditChooseFromAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) + 1));
 
-            });
-            imHallEditMinusChooseFromAll.setOnClickListener(l -> {
-                if (Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) > 0) {
-                    tvHallEditChooseFromAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) - 1));
-                }
+                });
+                imHallEditMinusChooseFromAll.setOnClickListener(l -> {
+                    if (Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) > 0) {
+                        tvHallEditChooseFromAll.setText(String.valueOf(Integer.parseInt(tvHallEditChooseFromAll.getText().toString()) - 1));
+                    }
 
-            });
-            Button btnAddToListHallEdit;
-            Button btnSaveListHallEdit;
-            llListHallEdit = view.findViewById(R.id.llListHallEdit);
-            btnAddToListHallEdit = view.findViewById(R.id.btnAddToListHallEdit);
-            btnSaveListHallEdit = view.findViewById(R.id.btnSaveListHallEdit);
-            readCountHallEditInFirebase(value, llListHallEdit);
-            btnAddToListHallEdit.setOnClickListener(l -> {
-                addNewBoxView(llListHallEdit);
-            });
-            btnSaveListHallEdit.setOnClickListener(l -> {
-                List<ImageView> imageViewList = new ArrayList<>();
-                for (int i = 0; i < llListHallEdit.getChildCount(); i++) {
-                    test = true;
-                    View oneBoxHallEdit = llListHallEdit.getChildAt(i);
-                    EditText etNameProductEdit = oneBoxHallEdit.findViewById(R.id.etNameProductEdit);
-                    ImageView imImageProductEdit = oneBoxHallEdit.findViewById(R.id.imImageProductEdit);
-                    EditText etPriceProductEdit = oneBoxHallEdit.findViewById(R.id.etPriceProductEdit);
-                    CheckBox cbInProductEdit = oneBoxHallEdit.findViewById(R.id.cbInProductEdit);
-                    Product product = new Product();
-                    if (!etNameProductEdit.getText().toString().equals("")) {
-                        product.setName(etNameProductEdit.getText().toString());
+                });
+                Button btnAddToListHallEdit;
+                Button btnSaveListHallEdit;
+                llListHallEdit = view.findViewById(R.id.llListHallEdit);
+                btnAddToListHallEdit = view.findViewById(R.id.btnAddToListHallEdit);
+                btnSaveListHallEdit = view.findViewById(R.id.btnSaveListHallEdit);
+                readCountHallEditInFirebase(value, llListHallEdit);
+                btnAddToListHallEdit.setOnClickListener(l -> {
+                    addNewBoxView(llListHallEdit);
+                });
+                btnSaveListHallEdit.setOnClickListener(l -> {
+                    List<ImageView> imageViewList = new ArrayList<>();
+                    for (int i = 0; i < llListHallEdit.getChildCount(); i++) {
+                        test = true;
+                        View oneBoxHallEdit = llListHallEdit.getChildAt(i);
+                        EditText etNameProductEdit = oneBoxHallEdit.findViewById(R.id.etNameProductEdit);
+                        ImageView imImageProductEdit = oneBoxHallEdit.findViewById(R.id.imImageProductEdit);
+                        EditText etPriceProductEdit = oneBoxHallEdit.findViewById(R.id.etPriceProductEdit);
+                        CheckBox cbInProductEdit = oneBoxHallEdit.findViewById(R.id.cbInProductEdit);
+                        Product product = new Product();
+                        if (!etNameProductEdit.getText().toString().equals("")) {
+                            product.setName(etNameProductEdit.getText().toString());
+                        } else {
+                            test = false;
+                        }
+                        if (!etPriceProductEdit.getText().toString().equals("")) {
+                            product.setPrice(Long.parseLong(etPriceProductEdit.getText().toString()));
+                        } else {
+                            test = false;
+                        }
+                        if (cbInProductEdit.isChecked()) {
+                            product.setInPrice(true);
+                        } else {
+                            product.setInPrice(false);
+                        }
+                        if (test) {
+                            products.add(product);
+                            imageViewList.add(imImageProductEdit);
+                        }
+                    }
+                    if (products.size() == 0) {
+                        Toast.makeText(getContext(), "תוסיף קודם נתונים", Toast.LENGTH_SHORT).show();
                     } else {
-                        test = false;
+                        uploadMethod(imageViewList, 0);
                     }
-                    if (!etPriceProductEdit.getText().toString().equals("")) {
-                        product.setPrice(Long.parseLong(etPriceProductEdit.getText().toString()));
-                    } else {
-                        test = false;
-                    }
-                    if (cbInProductEdit.isChecked()) {
-                        product.setInPrice(true);
-                    } else {
-                        product.setInPrice(false);
-                    }
-                    if (test) {
-                        products.add(product);
-                        imageViewList.add(imImageProductEdit);
-                    }
-                }
-                if (products.size() == 0) {
-                    Toast.makeText(getContext(), "תוסיף קודם נתונים", Toast.LENGTH_SHORT).show();
-                } else {
-                    uploadMethod(imageViewList, 0);
-                }
-            });
+                });
+            }else {
+                TextView tvClientChooseName = view.findViewById(R.id.tvClientChooseName);
+                value = getArguments().getString("menuEdit");
+                String text = "בחירת " + value;
+                tvClientChooseName.setText(text);
+                TextView tvClientChooseChoosingFewThings= view.findViewById(R.id.tvClientChooseChoosingFewThings);
+                TextView tvClientChooseInAdditionThere= view.findViewById(R.id.tvClientChooseInAdditionThere);
+                Button btnSaveClientChoose = view.findViewById(R.id.btnSaveClientChoose);
+                tvClientChooseChoosingFewThings.setVisibility(View.GONE);
+                tvClientChooseInAdditionThere.setVisibility(View.GONE);
+                btnSaveClientChoose.setVisibility(View.GONE);
+                readListOfProductsFromClientIfHaveElseFromClient(value,hallName,from);
+                rvListClientChoose = view.findViewById(R.id.rvListClientChoose);
+                rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+                ProductAdapter productAdapter = new ProductAdapter(getContext(), products, 0 , 0);
+                rvListClientChoose.setAdapter(productAdapter);
+            }
         }
         if (typePage.equals("Client")) {
             TextView tvClientChooseName = view.findViewById(R.id.tvClientChooseName);
@@ -306,7 +337,39 @@ public class EditChooseFragment extends Fragment {
                     }
                 });
     }
+    private void readListOfProductsFromClientIfHaveElseFromClient(String value, String nameHall, String emailClient){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name = String.valueOf(document.getData().get("name"));
+                                String image = String.valueOf(document.getData().get("image"));
+                                Long price = (Long)(document.getData().get("price"));
+                                Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+                                Boolean chooseThis = (Boolean)(document.getData().get("chooseThis"));
+                                Long priceClient = (Long)(document.getData().get("priceClient"));
+                                Product product = new Product(name,price,inPrice,priceClient,image,chooseThis);
 
+                                if (chooseThis != null && chooseThis){
+                                    products.add(product);
+                                }
+                            }
+                            rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+                            ProductAdapter productAdapter = new ProductAdapter(getContext(), products);
+                            rvListClientChoose.setAdapter(productAdapter);
+
+                        } else {
+                        }
+                    }}).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
     private void readListOfProductsFromClientIfHaveElseFromHall(String value, String nameHall, String chooseFromAll, String fromAll){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("hall").document(nameHall).collection(value)

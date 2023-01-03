@@ -15,11 +15,17 @@ import com.eynav.planevent_android_app.R;
 public class MenuEditActivity extends Fragment {
 
     Button buffe, salades, firstDishes, secondDishes, deserts;
+    String from = "";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.activity_menu_edit, container, false);
     }
+    public MenuEditActivity(){
 
+    }
+    public MenuEditActivity(String from){
+        this.from = from;
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -33,6 +39,9 @@ public class MenuEditActivity extends Fragment {
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment myFragment = new EditChooseFragment();
+                if (!from.equals("")){
+                    myFragment = new EditChooseFragment(from);
+                }
                 Bundle args = new Bundle();
                 args.putString("menuEdit", "בופה");
                 myFragment.setArguments(args);
@@ -44,6 +53,9 @@ public class MenuEditActivity extends Fragment {
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment myFragment = new EditChooseFragment();
+                if (!from.equals("")){
+                    myFragment = new EditChooseFragment(from);
+                }
                 Bundle args = new Bundle();
                 args.putString("menuEdit", "סלטים");
                 myFragment.setArguments(args);
@@ -56,6 +68,9 @@ public class MenuEditActivity extends Fragment {
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment myFragment = new EditChooseFragment();
+                if (!from.equals("")){
+                    myFragment = new EditChooseFragment(from);
+                }
                 Bundle args = new Bundle();
                 args.putString("menuEdit", "מנות ראשונות");
                 myFragment.setArguments(args);
@@ -68,6 +83,9 @@ public class MenuEditActivity extends Fragment {
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment myFragment = new EditChooseFragment();
+                if (!from.equals("")){
+                    myFragment = new EditChooseFragment(from);
+                }
                 Bundle args = new Bundle();
                 args.putString("menuEdit", "מנות עיקריות");
                 myFragment.setArguments(args);
@@ -79,6 +97,9 @@ public class MenuEditActivity extends Fragment {
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment myFragment = new EditChooseFragment();
+                if (!from.equals("")){
+                    myFragment = new EditChooseFragment(from);
+                }
                 Bundle args = new Bundle();
                 args.putString("menuEdit", "קינוחים");
                 myFragment.setArguments(args);

@@ -83,6 +83,15 @@ public class EventFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (eventsAdapter != null){
+            eventsAdapter.clear();
+
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(root, savedInstanceState);
 
@@ -213,6 +222,36 @@ public class EventFragment extends Fragment {
         }
 
         if (typePage.equals("Client")) {
+            SharedPreferences shareName = getContext().getSharedPreferences("emailClient", MODE_PRIVATE);
+            String emailClient = shareName.getString("emailClient", "default if empty");
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("hall").document(nameUser).collection("events").whereEqualTo("emailClient1",emailClient)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
+                                    String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
+                                    Long countInvited = (Long)(document.getData().get("countInvited"));
+                                    Long price = (Long)(document.getData().get("price"));
+                                    String typeEvent = String.valueOf(document.getData().get("typeEvent"));
+                                    String dateEvent = String.valueOf(document.getData().get("dateEvent"));
+                                    String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
+                                    String hourEvent = String.valueOf(document.getData().get("hourEvent"));
+                                    Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
+                                    Fragment myFragment = new AccountSummary(event,"client");
+                                    AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
+
+                                }
+                            } else {
+                                System.out.println("Error getting documents.");
+                            }
+                        }});
+
         }
         }
 

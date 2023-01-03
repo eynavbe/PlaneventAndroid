@@ -4,5 +4,7 @@
     <string name="title_event">אירועים</string>
     <string name="title_edit">עריכה</string>
     <string name="title_schedule">לוז</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

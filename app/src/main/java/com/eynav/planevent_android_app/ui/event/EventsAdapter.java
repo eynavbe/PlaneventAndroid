@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eynav.planevent_android_app.Event;
@@ -280,7 +282,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
                     }
                 });
     }
-
+    public void clear() {
+        int size = events.size();
+        events.clear();
+        notifyItemRangeRemoved(0, size);
+    }
     @Override
     public int getItemCount() {
         return events.size();
@@ -299,6 +305,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
             tvLastNameEvent = itemView.findViewById(R.id.tvLastNameEvent);
             imUpdateEvent = itemView.findViewById(R.id.imUpdateEvent);
             imDeleteEvent = itemView.findViewById(R.id.imDeleteEvent);
+            itemView.setOnClickListener(l ->{
+                Fragment myFragment = new AccountSummary(event, "hall");
+                AppCompatActivity activity = (AppCompatActivity) itemView.getContext();
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
+            });
         }
     }
     }

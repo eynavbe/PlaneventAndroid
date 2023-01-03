@@ -56,7 +56,9 @@ public class MainActivity2 extends AppCompatActivity {
                 startActivity(new Intent(MainActivity2.this, RegisterHallActivity.class));
             }
             else{
-                startActivity(new Intent(MainActivity2.this, SignupHallActivity.class));
+//                startActivity(new Intent(MainActivity2.this, SignupHallActivity.class));
+                startActivity(new Intent(MainActivity2.this, MainActivity.class));
+
             }
         });
         btnClient.setOnClickListener(l ->{

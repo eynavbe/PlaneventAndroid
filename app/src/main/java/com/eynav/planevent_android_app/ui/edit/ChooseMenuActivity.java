@@ -15,11 +15,17 @@ import com.eynav.planevent_android_app.R;
 public class ChooseMenuActivity extends Fragment {
 
     Button buffe, salades, firstDishes, secondDishes, deserts;
+    String from = "";
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.activity_choose_menu, container, false);
     }
+    public ChooseMenuActivity(){
 
+    }
+    public ChooseMenuActivity(String from){
+        this.from = from;
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

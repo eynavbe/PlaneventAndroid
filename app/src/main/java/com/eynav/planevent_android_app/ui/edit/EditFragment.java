@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,14 +22,25 @@ public class EditFragment extends Fragment{
     Button menu, numOfInvated, hallDecoration, others;
     SharedPreferences shareType;
     String typePage;
+    String from ="";
+    public EditFragment(){
+
+    }
+    public EditFragment(String from){
+        this.from = from;
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         shareType = getContext().getSharedPreferences("type", MODE_PRIVATE);
         typePage = shareType.getString("type", "default if empty");
         if (typePage.equals("Hall")) {
-            ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
-            return inflater.inflate(R.layout.activity_choose_manag_edit, container, false);
+            if (from.equals("")){
+                ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("עריכה");
+                return inflater.inflate(R.layout.activity_choose_manag_edit, container, false);
+            }else {
+                return inflater.inflate(R.layout.activity_choose_manag_edit, container, false);
+            }
         }else {
             ((AppCompatActivity) getContext()).getSupportActionBar().setTitle("בחירות");
             return inflater.inflate(R.layout.activity_choosing_client_option, container, false);
@@ -38,6 +51,10 @@ public class EditFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (typePage.equals("Hall")) {
+            if (!from.equals("")){
+                TextView txtChooseManag = view.findViewById(R.id.txtChooseManag);
+                txtChooseManag.setText("בחירות הלקוח");
+            }
             menu = view.findViewById(R.id.idMenuManag);
             numOfInvated = view.findViewById(R.id.idNumberInvatedManag);
             hallDecoration = view.findViewById(R.id.idHallDcrtnManag);
@@ -47,6 +64,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new MenuEditActivity();
+                    if (!from.equals("")){
+                        myFragment = new MenuEditActivity(from);
+                    }
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
                 }
             });
@@ -55,6 +75,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "אטרקציות");
                     myFragment.setArguments(args);
@@ -66,6 +89,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "עיצוב אולם");
                     myFragment.setArguments(args);
@@ -79,6 +105,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "שונות");
                     myFragment.setArguments(args);
@@ -97,6 +126,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new ChooseMenuActivity();
+                    if (!from.equals("")){
+                        myFragment = new ChooseMenuActivity(from);
+                    }
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
                 }
             });
@@ -106,6 +138,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "אטרקציות");
                     myFragment.setArguments(args);
@@ -117,6 +152,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "עיצוב אולם");
                     myFragment.setArguments(args);
@@ -128,6 +166,9 @@ public class EditFragment extends Fragment{
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment myFragment = new EditChooseFragment();
+                    if (!from.equals("")){
+                        myFragment = new EditChooseFragment(from);
+                    }
                     Bundle args = new Bundle();
                     args.putString("menuEdit", "שונות");
                     myFragment.setArguments(args);
