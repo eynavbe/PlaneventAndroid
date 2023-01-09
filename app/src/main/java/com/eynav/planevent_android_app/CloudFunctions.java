@@ -48,11 +48,10 @@ public class CloudFunctions extends AppCompatActivity {
     private Task<String> addMessage(String text) {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
-        data.put("text", text);
-        data.put("push", true);
+        data.put("name", text);
 
         return mFunctions
-                .getHttpsCallable("addMessage")
+                .getHttpsCallable("hiWord")
                 .call(data)
                 .continueWith(new Continuation<HttpsCallableResult, String>() {
                     @Override
