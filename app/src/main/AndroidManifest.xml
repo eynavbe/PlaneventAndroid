@@ -17,7 +17,12 @@
         tools:targetApi="31">
         <activity
             android:name=".CloudFunctions"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -33,11 +38,11 @@
             android:name=".ScreenLogo"
             android:exported="true"
             android:theme="@style/AppTheme1">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
 
             <meta-data
                 android:name="android.app.lib_name"
@@ -70,6 +75,7 @@
         <activity
             android:name=".RegisterClientActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>
