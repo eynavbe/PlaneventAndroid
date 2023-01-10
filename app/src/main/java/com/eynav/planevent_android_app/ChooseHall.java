@@ -42,6 +42,7 @@ public class ChooseHall extends AppCompatActivity {
     }
 
     private void readHallsFromFirebase(String emailClient) {
+        (new CloudFunctions()).readHallsDataFromFirebaseCloud("hall");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("hall")
                 .get()

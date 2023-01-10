@@ -12,7 +12,13 @@ public class Hall {
         this.phoneNum = phoneNum;
         this.email = email;
     }
-
+    public Hall(String nameHall, String hallArea, String hallCountPeople, String email, String phoneNum) {
+        this.nameHall = nameHall;
+        this.hallArea = hallArea;
+        this.hallCountPeople = hallCountPeople;
+        this.phoneNum = phoneNum;
+        this.email = email;
+    }
     public String getNameHall() {
         return nameHall;
     }
@@ -67,7 +73,9 @@ public class Hall {
                 "nameHall='" + nameHall + '\'' +
                 ", hallImage='" + hallImage + '\'' +
                 ", hallArea='" + hallArea + '\'' +
-                ", hallCountPeople=" + hallCountPeople +
+                ", email='" + email + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", hallCountPeople='" + hallCountPeople + '\'' +
                 '}';
     }
 }
