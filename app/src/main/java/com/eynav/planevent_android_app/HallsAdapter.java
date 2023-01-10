@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.List;
 
@@ -60,46 +61,84 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
 
     }
     private void CheckIfCustomerRegisteredToHallFromFirebase(String hallName, View itemView, String hallNumber) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall").document(hallName).collection("events")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
-                                String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
-                                if (emailClient1.equals(emailClient)){
-                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
-                                    // save your string in SharedPreferences
-                                    shareHall.edit().putString("hall", hallName).commit();
-                                    Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
-                                    // get or create SharedPreferences
-                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
-                                    // save your string in SharedPreferences
-                                    shareType.edit().putString("type", "Client").commit();
-                                    itemView.getContext().startActivity(homeHall);
-                                    test = true;
+            new CloudFunctions().readEventsDataFromFirebase("hall", hallName, "events")
+                    .addOnCompleteListener(new OnCompleteListener<List<Event>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<Event>> task) {
+                            System.out.println(task.toString());
+                            System.out.println(task.getResult().toString());
+                            if (task.isSuccessful()) {
+                                for (int i = 0; i < task.getResult().size(); i++) {
+                                    System.out.println(task.getResult().get(i));
+                                    if (task.getResult().get(i).getEmailClient1().equals(emailClient)){
+                                        SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
+                                        // save your string in SharedPreferences
+                                        shareHall.edit().putString("hall", hallName).commit();
+                                        Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
+                                        // get or create SharedPreferences
+                                        SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+                                        // save your string in SharedPreferences
+                                        shareType.edit().putString("type", "Client").commit();
+                                        itemView.getContext().startActivity(homeHall);
+                                        test = true;
+                                    }
+                                    if (task.getResult().get(i).getEmailClient2().equals(emailClient)){
+                                        // get or create SharedPreferences
+                                        SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
+
+                                        // save your string in SharedPreferences
+                                        shareHall.edit().putString("hall", hallName).commit();
+                                        Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
+                                        // get or create SharedPreferences
+                                        SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+
+                                        // save your string in SharedPreferences
+                                        shareType.edit().putString("type", "Client").commit();
+                                        itemView.getContext().startActivity(homeHall);
+                                        test = true;
+                                    }
                                 }
-                                if (emailClient2.equals(emailClient)){
-                                    // get or create SharedPreferences
-                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
+                                if (!test){
+                                    AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+                                            .setTitle("לא רשום")
+                                            .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
+                                            .setIcon(R.drawable.ic_baseline_delete_24)
+                                            .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                                    callIntent.setData(Uri.parse("tel:"+hallNumber));
+                                                    if (ContextCompat.checkSelfPermission(context,
+                                                            Manifest.permission.CALL_PHONE)
+                                                            != PackageManager.PERMISSION_GRANTED) {
+                                                        AppCompatActivity activity = (AppCompatActivity) context;
 
-                                    // save your string in SharedPreferences
-                                    shareHall.edit().putString("hall", hallName).commit();
-                                    Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
-                                    // get or create SharedPreferences
-                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+                                                        ActivityCompat.requestPermissions(activity,
+                                                                new String[]{Manifest.permission.CALL_PHONE},
+                                                                1);
 
-                                    // save your string in SharedPreferences
-                                    shareType.edit().putString("type", "Client").commit();
-                                    itemView.getContext().startActivity(homeHall);
-                                    test = true;
+                                                    } else {
+
+                                                        try {
+                                                            context.startActivity(callIntent);
+
+                                                        } catch(SecurityException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+
+                                                }
+                                            }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                }
+                                            });
+
+                                    builderDelete.show();
                                 }
-                            }
 
-                            if (!test){
+                            }else{
                                 AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
                                         .setTitle("לא רשום")
                                         .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
@@ -108,25 +147,8 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                                callIntent.setData(Uri.parse("tel:"+hallNumber));
-                                                if (ContextCompat.checkSelfPermission(context,
-                                                        Manifest.permission.CALL_PHONE)
-                                                        != PackageManager.PERMISSION_GRANTED) {
-                                                    AppCompatActivity activity = (AppCompatActivity) context;
-
-                                                    ActivityCompat.requestPermissions(activity,
-                                                            new String[]{Manifest.permission.CALL_PHONE},
-                                                            1);
-
-                                                } else {
-
-                                                    try {
-                                                        context.startActivity(callIntent);
-
-                                                    } catch(SecurityException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
+                                                callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+                                                context.startActivity(callIntent);
 
                                             }
                                         }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
@@ -137,55 +159,148 @@ public class HallsAdapter extends RecyclerView.Adapter<HallsAdapter.HallsAdapter
                                         });
 
                                 builderDelete.show();
+                                Exception e = task.getException();
+                                if (e instanceof FirebaseFunctionsException) {
+                                    FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                    FirebaseFunctionsException.Code code = ffe.getCode();
+                                    Object details = ffe.getDetails();
+                                    System.out.println(details.toString());
+                                }
                             }
-
-                        } else {
-                            AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
-                                    .setTitle("לא רשום")
-                                    .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
-                                    .setIcon(R.drawable.ic_baseline_delete_24)
-                                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                            callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
-                                            context.startActivity(callIntent);
-
-                                        }
-                                    }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                                        }
-                                    });
-
-                            builderDelete.show();
                         }
-                    }}).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
-                                .setTitle("לא רשום")
-                                .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
-                                .setIcon(R.drawable.ic_baseline_delete_24)
-                                .setPositiveButton("כן", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent callIntent = new Intent(Intent.ACTION_CALL);
-                                        callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
-                                        context.startActivity(callIntent);
+                    });
 
-                                    }
-                                }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                                    }
-                                });
 
-                        builderDelete.show();
-                    }
-                });
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("hall").document(hallName).collection("events")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
+//                                String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
+//                                if (emailClient1.equals(emailClient)){
+//                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
+//                                    // save your string in SharedPreferences
+//                                    shareHall.edit().putString("hall", hallName).commit();
+//                                    Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
+//                                    // get or create SharedPreferences
+//                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+//                                    // save your string in SharedPreferences
+//                                    shareType.edit().putString("type", "Client").commit();
+//                                    itemView.getContext().startActivity(homeHall);
+//                                    test = true;
+//                                }
+//                                if (emailClient2.equals(emailClient)){
+//                                    // get or create SharedPreferences
+//                                    SharedPreferences shareHall = context.getSharedPreferences("hall", MODE_PRIVATE);
+//
+//                                    // save your string in SharedPreferences
+//                                    shareHall.edit().putString("hall", hallName).commit();
+//                                    Intent homeHall= new Intent(itemView.getContext(), MainActivity.class);
+//                                    // get or create SharedPreferences
+//                                    SharedPreferences shareType = itemView.getContext().getSharedPreferences("type", MODE_PRIVATE);
+//
+//                                    // save your string in SharedPreferences
+//                                    shareType.edit().putString("type", "Client").commit();
+//                                    itemView.getContext().startActivity(homeHall);
+//                                    test = true;
+//                                }
+//                            }
+//
+//                            if (!test){
+//                                AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+//                                        .setTitle("לא רשום")
+//                                        .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
+//                                        .setIcon(R.drawable.ic_baseline_delete_24)
+//                                        .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                                callIntent.setData(Uri.parse("tel:"+hallNumber));
+//                                                if (ContextCompat.checkSelfPermission(context,
+//                                                        Manifest.permission.CALL_PHONE)
+//                                                        != PackageManager.PERMISSION_GRANTED) {
+//                                                    AppCompatActivity activity = (AppCompatActivity) context;
+//
+//                                                    ActivityCompat.requestPermissions(activity,
+//                                                            new String[]{Manifest.permission.CALL_PHONE},
+//                                                            1);
+//
+//                                                } else {
+//
+//                                                    try {
+//                                                        context.startActivity(callIntent);
+//
+//                                                    } catch(SecurityException e) {
+//                                                        e.printStackTrace();
+//                                                    }
+//                                                }
+//
+//                                            }
+//                                        }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                            }
+//                                        });
+//
+//                                builderDelete.show();
+//                            }
+//
+//                        } else {
+//                            AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+//                                    .setTitle("לא רשום")
+//                                    .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
+//                                    .setIcon(R.drawable.ic_baseline_delete_24)
+//                                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//                                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                            callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+//                                            context.startActivity(callIntent);
+//
+//                                        }
+//                                    }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                        }
+//                                    });
+//
+//                            builderDelete.show();
+//                        }
+//                    }}).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        AlertDialog.Builder builderDelete = new AlertDialog.Builder(context)
+//                                .setTitle("לא רשום")
+//                                .setMessage("אתה לא רשום אצל האולם, אתה רוצה להתקשר לאולם?")
+//                                .setIcon(R.drawable.ic_baseline_delete_24)
+//                                .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                        callIntent.setData(Uri.parse("tel:"+hallNumber));//change the number
+//                                        context.startActivity(callIntent);
+//
+//                                    }
+//                                }).setNegativeButton("לא", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                    }
+//                                });
+//
+//                        builderDelete.show();
+//                    }
+//                });
     }
     @Override
     public int getItemCount() {

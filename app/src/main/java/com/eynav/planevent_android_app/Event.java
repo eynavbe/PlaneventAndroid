@@ -52,4 +52,18 @@ public class Event {
     public String getTypeEvent() {
         return typeEvent;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "emailClient1='" + emailClient1 + '\'' +
+                ", emailClient2='" + emailClient2 + '\'' +
+                ", countInvited=" + countInvited +
+                ", price=" + price +
+                ", typeEvent='" + typeEvent + '\'' +
+                ", dateEvent='" + dateEvent + '\'' +
+                ", lastNameEvent='" + lastNameEvent + '\'' +
+                ", hourEvent='" + hourEvent + '\'' +
+                '}';
+    }
 }
