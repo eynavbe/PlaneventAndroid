@@ -39,6 +39,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,25 +140,33 @@ public class SingupClientActivity extends AppCompatActivity {
         Activity activity = this;
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("client")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.getId().equals(email)){
-                                    test = true;
-                                    SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                                    shareType.edit().putString("emailClient", email).commit();
-                                    startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
-                                    finish();
+
+
+
+
+
+
+        (new CloudFunctions()).readClientsDataFromFirebase("client")
+                .addOnCompleteListener(new OnCompleteListener<List<String>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<String>> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                if (task.getResult().get(i).equals(email)){
+                                        test = true;
+                                        SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+
+                                        shareType.edit().putString("emailClient", email).commit();
+                                        startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
+                                        finish();
+
                                 }
                             }
                             loadingdialog.dismissdialog();
-
                             if (!test){
                                 AlertDialog.Builder builderDelete = new AlertDialog.Builder(getApplicationContext())
                                         .setTitle("הוספת משתמש")
@@ -181,47 +190,146 @@ public class SingupClientActivity extends AppCompatActivity {
                                 builderDelete.show();
 
 
-                           }
-                        } else {
-                            System.out.println("Error getting documents.");
-                            System.out.println(task.getException().toString());
+                            }
+
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
                     }
-
-
                 });
+
+
+
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("client")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                if (document.getId().equals(email)){
+//                                    test = true;
+//                                    SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+//
+//                                    shareType.edit().putString("emailClient", email).commit();
+//                                    startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
+//                                    finish();
+//                                }
+//                            }
+//                            loadingdialog.dismissdialog();
+//
+//                            if (!test){
+//                                AlertDialog.Builder builderDelete = new AlertDialog.Builder(getApplicationContext())
+//                                        .setTitle("הוספת משתמש")
+//                                        .setMessage("רשום לנו שאתה לא רשום כלקוח, היית רוצה להירשם?")
+//                                        .setIcon(R.drawable.ic_baseline_delete_24)
+//                                        .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                                addClientToFirebase(email);
+//
+//                                            }
+//                                        })
+//                                        .setNegativeButton("לא", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                                startActivity(new Intent(SingupClientActivity.this, MainActivity2.class));
+//                                                finish();
+//                                            }
+//                                        });
+//
+//                                builderDelete.show();
+//
+//
+//                           }
+//                        } else {
+//                            System.out.println("Error getting documents.");
+//                            System.out.println(task.getException().toString());
+//                        }
+//                    }
+//
+//
+//                });
     }
     private void addClientToFirebase(String email) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
-        Map<String, Object> client = new HashMap<>();
-        client.put("emailClient", email);
+//        Map<String, Object> client = new HashMap<>();
+//        client.put("emailClient", email);
         Activity activity = this;
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
 
-        db.collection("client").document(email)
-                .set(client)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        System.out.println("DocumentSnapshot added");
-                        loadingdialog.dismissdialog();
-                        SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                        shareType.edit().putString("emailClient", email).commit();
-
-                        startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+        new CloudFunctions().writeUserToFirebase("client",  email,  email)
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
-                        System.out.println(e.toString());
+                    public void onComplete(@NonNull Task<String> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            Log.e("demo",""+task.getResult());
+                            System.out.println("DocumentSnapshot added");
+                            loadingdialog.dismissdialog();
+                            SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+
+                            shareType.edit().putString("emailClient", email).commit();
+
+                            startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
+                            finish();
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
+                        }
                     }
                 });
+
+
+
+
+//        db.collection("client").document(email)
+//                .set(client)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        System.out.println("DocumentSnapshot added");
+//                        loadingdialog.dismissdialog();
+//                        SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+//
+//                        shareType.edit().putString("emailClient", email).commit();
+//
+//                        startActivity(new Intent(SingupClientActivity.this, ChooseHall.class));
+//                        finish();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                        System.out.println(e.toString());
+//                    }
+//                });
 
     }
     @Override

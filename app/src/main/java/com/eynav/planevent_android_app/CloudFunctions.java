@@ -1,12 +1,10 @@
 package com.eynav.planevent_android_app;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.util.Log;
 
+import com.eynav.planevent_android_app.ui.edit.Product;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +46,161 @@ public class CloudFunctions {
 //                    }
 //                });
 //    }
+
+
+
+    public Task<List<String>> readClientsDataFromFirebase(String collection1) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        System.out.println(collection1);
+        data.put("collection1", collection1);
+
+        return mFunctions
+                .getHttpsCallable("readDataFromFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, List<String>>() {
+                    @Override
+                    public List<String> then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        System.out.println(task.getResult().getData());
+                        ArrayList<HashMap<String,Object>> result = (ArrayList<HashMap<String,Object>>) task.getResult().getData();
+                        System.out.println((String) result.get(0).get("emailClient"));
+                        List<String> clientList = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {
+                            String emailClient = (String) result.get(i).get("emailClient");
+//                            String hallArea = (String) result.get(i).get("hallArea");
+//                            String phoneNum = (String) result.get(i).get("phoneNum");
+//                            String email = (String) result.get(i).get("email");
+//                            String maxHallPeople = (String) result.get(i).get("maxHallPeople");
+//                            Hall hall = new Hall(hallName,hallArea,maxHallPeople,email,phoneNum);
+                            clientList.add(emailClient);
+                        }
+                        return clientList;
+                    }
+                });
+    }
+
+
+    public Task<List<Product>> readHallProductDataFromFirebase(String collection1, String doc1, String collection2) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        System.out.println(collection1);
+
+
+
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+
+        return mFunctions
+                .getHttpsCallable("readDataFromFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, List<Product>>() {
+                    @Override
+                    public List<Product> then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        System.out.println(task.getResult().getData());
+                        ArrayList<HashMap<String,Object>> result = (ArrayList<HashMap<String,Object>>) task.getResult().getData();
+
+                        List<Product> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {
+                            System.out.println(result.get(i));
+                            if (result.get(i).get("name") != null){
+                                String name = String.valueOf(result.get(i).get("name"));
+                                String image = String.valueOf(result.get(i).get("image"));
+                                Long price = ((Integer)(result.get(i).get("price"))).longValue();
+                                Boolean inPrice = (Boolean)(result.get(i).get("inPrice"));
+                                Product product = new Product(name,price,inPrice,0L,image,false);
+                                productArrayList.add(product);
+                            }
+
+                        }
+                        return productArrayList;
+                    }
+                });
+    }
+
+
+
+
+    public Task<CountHallEdit> readCountHallEditDataFromFirebase(String collection1, String doc1, String collection2) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        System.out.println(collection1);
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        return mFunctions
+                .getHttpsCallable("readDataFromFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, CountHallEdit>() {
+                    @Override
+                    public CountHallEdit then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        System.out.println(task.getResult().getData());
+                        ArrayList<HashMap<String,Object>> result = (ArrayList<HashMap<String,Object>>) task.getResult().getData();
+                        CountHallEdit countHallEdit = null;
+//                        List<CountHallEdit> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {
+
+                            if (result.get(i).get("chooseCountAll") != null) {
+
+                                String chooseCountAll = String.valueOf(result.get(i).get("chooseCountAll"));
+                                String chooseFromAll = String.valueOf(result.get(i).get("chooseFromAll"));
+
+                                 countHallEdit = new CountHallEdit(chooseCountAll,chooseFromAll);
+                            }
+                        }
+                        return countHallEdit;
+                    }
+                });
+    }
+
+
+
+
+
+    public Task<List<Product>> readClientChoiceTypeDataFromFirebase(String collection1, String doc1, String collection2, String doc2, String collection3) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        System.out.println(collection1);
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        data.put("collection3", collection3);
+        return mFunctions
+                .getHttpsCallable("readDataFromFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, List<Product>>() {
+                    @Override
+                    public List<Product> then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        System.out.println(task.getResult().getData());
+                        ArrayList<HashMap<String,Object>> result = (ArrayList<HashMap<String,Object>>) task.getResult().getData();
+
+                        List<Product> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {
+
+                            if (result.get(i).get("name") != null) {
+
+
+                                String name = String.valueOf(result.get(i).get("name"));
+                                String image = String.valueOf(result.get(i).get("image"));
+                                Long price = ((Integer) (result.get(i).get("price"))).longValue();
+                                Boolean inPrice = (Boolean) (result.get(i).get("inPrice"));
+                                Boolean chooseThis = (Boolean) (result.get(i).get("chooseThis"));
+                                Long priceClient = ((Integer) (result.get(i).get("priceClient"))).longValue();
+                                Product product = new Product(name, price, inPrice, priceClient, image, chooseThis);
+                                productArrayList.add(product);
+                            }
+                        }
+                        return productArrayList;
+                    }
+                });
+    }
+
+
+
+
+
+
     public Task<List<Hall>> readHallsDataFromFirebase(String collection1) {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
@@ -126,11 +279,282 @@ public class CloudFunctions {
                     }
                 });
     }
+
+    public Task<String> writeUserToFirebase(String collection1, String doc1, String emailClient) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("emailClient", emailClient);
+
+        return mFunctions
+                .getHttpsCallable("writeUserToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+                        System.out.println((String) result.get("emailClient"));
+//                        System.out.println((int) result.get("age"));
+//                        CloudFunctionsName o = new CloudFunctionsName((String) result.get("name"), 10);
+//                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return (String) result.get("emailClient");
+                    }
+                });
+    }
+
+
+
+
+
+    public Task<String> deleteDataFromFirebase(String collection1, String doc1,String collection2, String doc2) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        return mFunctions
+                .getHttpsCallable("deleteDataFromFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+                        System.out.println((String) result.get("delete"));
+//                        System.out.println((int) result.get("age"));
+//                        CloudFunctionsName o = new CloudFunctionsName((String) result.get("name"), 10);
+//                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return (String) result.get("delete");
+                    }
+                });
+    }
+
+    public Task<Product> writeHallProductToFirebase(String collection1, String doc1, String collection2, String doc2, String name, Long price, String image, Boolean inPrice, Long priceClient, Boolean chooseThis) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        data.put("name", name);
+        data.put("price", price);
+        data.put("image", image);
+        data.put("inPrice", inPrice);
+        data.put("priceClient", priceClient);
+        data.put("chooseThis", chooseThis);
+
+        return mFunctions
+                .getHttpsCallable("writeHallProductToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, Product>() {
+                    @Override
+                    public Product then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+//                        System.out.println((int) result.get("age"));
+                        String name = String.valueOf(result.get("name"));
+                        String image = String.valueOf(result.get("image"));
+                        Long price = ((Integer) (result.get("price"))).longValue();
+                        Boolean inPrice = (Boolean) (result.get("inPrice"));
+                        Boolean chooseThis = (Boolean) (result.get("chooseThis"));
+                        Long priceClient = ((Integer) (result.get("priceClient"))).longValue();
+                        Product product = new Product(name, price, inPrice, priceClient, image, chooseThis);
+                        //                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return product;
+                    }
+                });
+    }
+
+
+
+    public Task<Product> writeClientChoiceTypeToFirebase(String collection1, String doc1, String collection2, String doc2, String collection3, String doc3, String name, Long price, String image, Boolean inPrice, Long priceClient, Boolean chooseThis) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        data.put("collection3", collection3);
+        data.put("doc3", doc3);
+        data.put("name", name);
+        data.put("price", price);
+        data.put("image", image);
+        data.put("inPrice", inPrice);
+        data.put("priceClient", priceClient);
+        data.put("chooseThis", chooseThis);
+
+        return mFunctions
+                .getHttpsCallable("writeClientChoiceTypeToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, Product>() {
+                    @Override
+                    public Product then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+//                        System.out.println((int) result.get("age"));
+                        String name = String.valueOf(result.get("name"));
+                        String image = String.valueOf(result.get("image"));
+                        Long price = ((Integer) (result.get("price"))).longValue();
+                        Boolean inPrice = (Boolean) (result.get("inPrice"));
+                        Boolean chooseThis = (Boolean) (result.get("chooseThis"));
+                        Long priceClient = ((Integer) (result.get("priceClient"))).longValue();
+                        Product product = new Product(name, price, inPrice, priceClient, image, chooseThis);
+                        //                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return product;
+                    }
+                });
+    }
+    public Task<CountHallEdit> writeCountHallEditToFirebase(String collection1, String doc1, String collection2, String doc2, String chooseCountAll, String chooseFromAll) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        data.put("chooseCountAll", chooseCountAll);
+        data.put("chooseFromAll", chooseFromAll);
+
+        return mFunctions
+                .getHttpsCallable("writeCountHallEditToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, CountHallEdit>() {
+                    @Override
+                    public CountHallEdit then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+//                        System.out.println((int) result.get("age"));
+                        String chooseCountAll = String.valueOf(result.get("chooseCountAll"));
+                        String chooseFromAll = String.valueOf(result.get("chooseFromAll"));
+                        CountHallEdit countHallEdit = new CountHallEdit(chooseCountAll, chooseFromAll);
+                        //                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return countHallEdit;
+                    }
+                });
+    }
+
+
+    public Task<Event> writeEventToFirebase(String collection1, String doc1,String collection2, String doc2, String emailClient1,String emailClient2,long countInvited,long price,String typeEvent,String dateEvent ,String lastNameEvent,String hourEvent) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("collection2", collection2);
+        data.put("doc2", doc2);
+        data.put("emailClient1", emailClient1);
+        data.put("emailClient2", emailClient2);
+        data.put("countInvited", countInvited);
+        data.put("price", price);
+        data.put("typeEvent", typeEvent);
+        data.put("dateEvent", dateEvent);
+        data.put("lastNameEvent", lastNameEvent);
+        data.put("hourEvent", hourEvent);
+
+
+        return mFunctions
+                .getHttpsCallable("writeEventToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, Event>() {
+                    @Override
+                    public Event then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+//                        System.out.println((int) result.get("age"));
+                        String emailClient1 = (String) result.get("emailClient1");
+                        String emailClient2 = (String) result.get("emailClient2");
+                        Integer countInvited = (Integer) result.get("countInvited");
+                        Integer price = (Integer) result.get("price");
+                        String typeEvent = (String) result.get("typeEvent");
+                        String dateEvent = (String) result.get("dateEvent");
+                        String lastNameEvent = (String) result.get("lastNameEvent");
+                        String hourEvent = (String) result.get("hourEvent");
+                        Event event = new Event(emailClient1,emailClient2,countInvited.longValue(),price.longValue(),typeEvent,dateEvent,lastNameEvent,hourEvent);
+
+//                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return event;
+                    }
+                });
+    }
+
+    public Task<Hall> writeHallToFirebase(String collection1, String doc1, String hallName, String hallArea, String maxHallPeople, String phoneNum, String email) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection1", collection1);
+        data.put("doc1", doc1);
+        data.put("hallName", hallName);
+        data.put("hallArea", hallArea);
+        data.put("maxHallPeople", maxHallPeople);
+        data.put("phoneNum", phoneNum);
+        data.put("email", email);
+
+        return mFunctions
+                .getHttpsCallable("writeHallToFirebase")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, Hall>() {
+                    @Override
+                    public Hall then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        System.out.println(task.getResult().getData());
+                        HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
+//                        System.out.println((int) result.get("age"));
+                        String hallName = (String) result.get("hallName");
+                        String hallArea = (String) result.get("hallArea");
+                        String phoneNum = (String) result.get("phoneNum");
+                        String email = (String) result.get("email");
+                        String maxHallPeople = (String) result.get("maxHallPeople");
+                        Hall hall = new Hall(hallName,hallArea,maxHallPeople,email,phoneNum);
+//                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
+
+                        return hall;
+                    }
+                });
+    }
+
+
+
+
+
+
     public void writeDataToFirebaseCloud(String text){
         writeDataToFirebase(text)
-                .addOnCompleteListener(new OnCompleteListener<CloudFunctionsName>() {
+                .addOnCompleteListener(new OnCompleteListener<CountHallEdit>() {
                     @Override
-                    public void onComplete(@NonNull Task<CloudFunctionsName> task) {
+                    public void onComplete(@NonNull Task<CountHallEdit> task) {
                         System.out.println(task.toString());
                         System.out.println(task.getResult().toString());
                         if (task.isSuccessful()) {
@@ -147,7 +571,7 @@ public class CloudFunctions {
                     }
                 });
     }
-    private Task<CloudFunctionsName> writeDataToFirebase(String text) {
+    private Task<CountHallEdit> writeDataToFirebase(String text) {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
         data.put("name", text);
@@ -156,9 +580,9 @@ public class CloudFunctions {
         return mFunctions
                 .getHttpsCallable("writeDataToFirebase")
                 .call(data)
-                .continueWith(new Continuation<HttpsCallableResult, CloudFunctionsName>() {
+                .continueWith(new Continuation<HttpsCallableResult, CountHallEdit>() {
                     @Override
-                    public CloudFunctionsName then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                    public CountHallEdit then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                         // This continuation runs on either success or failure, but if the task
                         // has failed then getResult() will throw an Exception which will be
                         // propagated down.
@@ -166,11 +590,11 @@ public class CloudFunctions {
                         HashMap<String,Object> result = (HashMap<String, Object>) task.getResult().getData();
                         System.out.println((String) result.get("name"));
 //                        System.out.println((int) result.get("age"));
-                        CloudFunctionsName o = new CloudFunctionsName((String) result.get("name"), 10);
-                        System.out.println(o.getAge());
-                        System.out.println(o.getName());
+//                        CountHallEdit o = new CountHallEdit((String) result.get("name"), 10);
+//                        System.out.println(o.getAge());
+//                        System.out.println(o.getName());
 
-                        return o;
+                        return null;
                     }
                 });
     }

@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -167,34 +168,67 @@ public class RegisterClientActivity extends AppCompatActivity {
             System.out.println("addEventToFirebase");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             // Create a new user with a first and last name
-            Map<String, Object> client = new HashMap<>();
-            client.put("emailClient", email);
+//            Map<String, Object> client = new HashMap<>();
+//            client.put("emailClient", email);
 
             Activity activity = this;
             Loading loadingdialog = new Loading(activity);
             loadingdialog.startLoadingdialog();
-            db.collection("client").document(email)
-                    .set(client)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            System.out.println("DocumentSnapshot added");
-                            loadingdialog.dismissdialog();
-                            SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
 
-                            shareType.edit().putString("emailClient", email).commit();
 
-                            startActivity(new Intent(RegisterClientActivity.this, ChooseHall.class));
-                            finish();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
+            new CloudFunctions().writeUserToFirebase("client",  email,  email)
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            System.out.println("Error adding document");
-                            System.out.println(e.toString());
+                        public void onComplete(@NonNull Task<String> task) {
+                            System.out.println(task.toString());
+                            System.out.println(task.getResult().toString());
+                            if (task.isSuccessful()) {
+                                Log.e("demo",""+task.getResult());
+                                System.out.println("DocumentSnapshot added");
+                                loadingdialog.dismissdialog();
+                                SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+
+                                shareType.edit().putString("emailClient", email).commit();
+
+                                startActivity(new Intent(RegisterClientActivity.this, ChooseHall.class));
+                                finish();
+                            }else{
+                                Exception e = task.getException();
+                                if (e instanceof FirebaseFunctionsException) {
+                                    FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                    FirebaseFunctionsException.Code code = ffe.getCode();
+                                    Object details = ffe.getDetails();
+                                    System.out.println(details.toString());
+                                }
+                            }
                         }
                     });
+
+
+
+
+//            db.collection("client").document(email)
+//                    .set(client)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            System.out.println("DocumentSnapshot added");
+//                            loadingdialog.dismissdialog();
+//                            SharedPreferences shareType = getSharedPreferences("emailClient", MODE_PRIVATE);
+//
+//                            shareType.edit().putString("emailClient", email).commit();
+//
+//                            startActivity(new Intent(RegisterClientActivity.this, ChooseHall.class));
+//                            finish();
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            System.out.println("Error adding document");
+//                            System.out.println(e.toString());
+//                        }
+//                    });
 
     }
 

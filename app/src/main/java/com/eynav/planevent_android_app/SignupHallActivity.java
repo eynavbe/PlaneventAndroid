@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +82,11 @@ public class SignupHallActivity extends AppCompatActivity {
     }
 
     private void loginManagerUser(String email, String password) {
+
+
+
+
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -106,22 +113,23 @@ public class SignupHallActivity extends AppCompatActivity {
         loadingdialog.startLoadingdialog();
         List<Event> events = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId());
 
-                                String emailHall = String.valueOf(document.getData().get("email"));
-                                if (emailHall.equals(email)){
+
+        (new CloudFunctions()).readHallsDataFromFirebase("hall")
+                .addOnCompleteListener(new OnCompleteListener<List<Hall>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Hall>> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                if (task.getResult().get(i).getEmail().equals(email)){
                                     test = true;
                                     SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
-                                    String hallName = String.valueOf(document.getData().get("hallName"));
+//                                    String hallName = String.valueOf(document.getData().get("hallName"));
                                     // save your string in SharedPreferences
-                                    shareType.edit().putString("name", hallName).commit();
+                                    shareType.edit().putString("name", task.getResult().get(i).getNameHall()).commit();
                                     startActivity(new Intent(SignupHallActivity.this, MainActivity.class));
                                     finish();
                                 }
@@ -153,14 +161,75 @@ public class SignupHallActivity extends AppCompatActivity {
 
 
                             }
-                        } else {
-                            System.out.println("Error getting documents.");
-                            System.out.println(task.getException().toString());
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
                     }
-
-
                 });
+
+
+
+//        db.collection("hall")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                System.out.println(document.getId());
+//
+//                                String emailHall = String.valueOf(document.getData().get("email"));
+//                                if (emailHall.equals(email)){
+//                                    test = true;
+//                                    SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+//                                    String hallName = String.valueOf(document.getData().get("hallName"));
+//                                    // save your string in SharedPreferences
+//                                    shareType.edit().putString("name", hallName).commit();
+//                                    startActivity(new Intent(SignupHallActivity.this, MainActivity.class));
+//                                    finish();
+//                                }
+//                            }
+//                            loadingdialog.dismissdialog();
+//
+//                            if (!test){
+//                                AlertDialog.Builder builderDelete = new AlertDialog.Builder(getApplicationContext())
+//                                        .setTitle("הוספת משתמש")
+//                                        .setMessage("רשום לנו שאתה לא רשום כבעל אולם, היית רוצה להירשם?")
+//                                        .setIcon(R.drawable.ic_baseline_delete_24)
+//                                        .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                                startActivity(new Intent(SignupHallActivity.this, RegisterHallActivity.class));
+//                                                finish();
+//
+//                                            }
+//                                        })
+//                                        .setNegativeButton("לא", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                                startActivity(new Intent(SignupHallActivity.this, MainActivity2.class));
+//                                                finish();
+//                                            }
+//                                        });
+//
+//                                builderDelete.show();
+//
+//
+//                            }
+//                        } else {
+//                            System.out.println("Error getting documents.");
+//                            System.out.println(task.getException().toString());
+//                        }
+//                    }
+//
+//
+//                });
     }
 
 

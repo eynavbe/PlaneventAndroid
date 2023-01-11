@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +19,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.eynav.planevent_android_app.CloudFunctions;
 import com.eynav.planevent_android_app.Event;
+import com.eynav.planevent_android_app.Hall;
+import com.eynav.planevent_android_app.HallsAdapter;
 import com.eynav.planevent_android_app.R;
 import com.eynav.planevent_android_app.ui.edit.EditFragment;
+import com.eynav.planevent_android_app.ui.edit.Product;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +33,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
+
+import java.util.List;
 
 
 public class AccountSummary extends Fragment {
@@ -95,25 +103,22 @@ public class AccountSummary extends Fragment {
         System.out.println(nameUser);
         System.out.println(event.getEmailClient1());
         String [] list = {"סלטים","בופה","אטרקציות","מנות ראשונות","מנות עיקריות","קינוחים","שונות","עיצוב האולם"};
-        db.collection("client").document(event.getEmailClient1()).collection(nameUser).document("בחירות").collection(list[i]).whereGreaterThan("priceClient",0)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Long price = 0L;
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.e("lllll","lllll");
-                                System.out.println(document.getId());
-//                                    String name = String.valueOf(document.getData().get("name"));
-//                                    namesProduct.add(name);
-//                                    String image = String.valueOf(document.getData().get("image"));
-                                    Long priceClient = (Long)(document.getData().get("priceClient"));
-//                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
-//                                    Product product = new Product(name,price,inPrice,0L,image,false);
-                                        System.out.println(document.getData());
-                                price += priceClient;
 
+
+
+        (new CloudFunctions()).readClientChoiceTypeDataFromFirebase("client",event.getEmailClient1(),nameUser, "בחירות",list[i])
+                .addOnCompleteListener(new OnCompleteListener<List<Product>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Product>> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        Long price = 0L;
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                if (task.getResult().get(i).getPriceClient() > 0){
+                                    price += task.getResult().get(i).getPriceClient() ;
+                                }
                             }
                             if ( task.getResult().size() > 0){
                                 priceAll+=price;
@@ -131,19 +136,73 @@ public class AccountSummary extends Fragment {
 
                             }
 
-//                            addNewBoxView(llListAccountSummary);
-                        } else {
+                        }else{
                             readChooseClientFromFirebase(event, llListAccountSummary, i+1);
 
                             System.out.println("Error getting documents.");
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }}).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        readChooseClientFromFirebase(event, llListAccountSummary, i+1);
-
                     }
                 });
+
+
+
+
+//        db.collection("client").document(event.getEmailClient1()).collection(nameUser).document("בחירות").collection(list[i]).whereGreaterThan("priceClient",0)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            Long price = 0L;
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.e("lllll","lllll");
+//                                System.out.println(document.getId());
+////                                    String name = String.valueOf(document.getData().get("name"));
+////                                    namesProduct.add(name);
+////                                    String image = String.valueOf(document.getData().get("image"));
+//                                    Long priceClient = (Long)(document.getData().get("priceClient"));
+////                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+////                                    Product product = new Product(name,price,inPrice,0L,image,false);
+//                                        System.out.println(document.getData());
+//                                price += priceClient;
+//
+//                            }
+//                            if ( task.getResult().size() > 0){
+//                                priceAll+=price;
+//                                String text = "תוספת על ה" + list[i] +" : ";
+//                                addNewBoxView(llListAccountSummary,text,String.valueOf(price));
+//
+//                            }
+//
+//                            if (list.length-1 > i){
+//                                readChooseClientFromFirebase(event, llListAccountSummary, i+1);
+//                            }else {
+//                                addNewBoxView(llListAccountSummary,"------------- ","");
+//
+//                                addNewBoxView(llListAccountSummary,"מחיר סכ'ה : ",String.valueOf(priceAll));
+//
+//                            }
+//
+////                            addNewBoxView(llListAccountSummary);
+//                        } else {
+//                            readChooseClientFromFirebase(event, llListAccountSummary, i+1);
+//
+//                            System.out.println("Error getting documents.");
+//                        }
+//                    }}).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        readChooseClientFromFirebase(event, llListAccountSummary, i+1);
+//
+//                    }
+//                });
     }
 
     private void addNewBoxView(LinearLayout llListAccountSummary, String text, String price) {

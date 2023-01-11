@@ -29,8 +29,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.eynav.planevent_android_app.CloudFunctions;
+import com.eynav.planevent_android_app.CountHallEdit;
+import com.eynav.planevent_android_app.Event;
 import com.eynav.planevent_android_app.Loading;
 import com.eynav.planevent_android_app.R;
+import com.eynav.planevent_android_app.ui.event.EventsAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,6 +44,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -304,21 +309,16 @@ public class EditChooseFragment extends Fragment {
                 });
     }
     private void readListOfProductsFromClientIfHaveElseFromClient(String value, String nameHall, String chooseFromAll, String fromAll){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+        (new CloudFunctions()).readClientChoiceTypeDataFromFirebase("client",emailClient,hallName, "בחירות",value)
+                .addOnCompleteListener(new OnCompleteListener<List<Product>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Product>> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name = String.valueOf(document.getData().get("name"));
-                                String image = String.valueOf(document.getData().get("image"));
-                                Long price = (Long)(document.getData().get("price"));
-                                Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
-                                Boolean chooseThis = (Boolean)(document.getData().get("chooseThis"));
-                                Long priceClient = (Long)(document.getData().get("priceClient"));
-                                Product product = new Product(name,price,inPrice,priceClient,image,chooseThis);
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                Product product = new Product(task.getResult().get(i).getName(),task.getResult().get(i).getPrice(),task.getResult().get(i).isInPrice(),task.getResult().get(i).getPriceClient(),task.getResult().get(i).getImage(),task.getResult().get(i).isChooseThis());
                                 products.add(product);
                             }
                             rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -327,34 +327,74 @@ public class EditChooseFragment extends Fragment {
                             if (products.size() == 0){
                                 readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
                             }
-                        } else {
+
+                        }else{
                             readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
+
+                            System.out.println("Error getting documents.");
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }}).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
                     }
                 });
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String name = String.valueOf(document.getData().get("name"));
+//                                String image = String.valueOf(document.getData().get("image"));
+//                                Long price = (Long)(document.getData().get("price"));
+//                                Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+//                                Boolean chooseThis = (Boolean)(document.getData().get("chooseThis"));
+//                                Long priceClient = (Long)(document.getData().get("priceClient"));
+//                                Product product = new Product(name,price,inPrice,priceClient,image,chooseThis);
+//                                products.add(product);
+//                            }
+//                            rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+//                            ProductAdapter productAdapter = new ProductAdapter(getContext(), products,Integer.parseInt(chooseFromAll),Integer.parseInt(fromAll));
+//                            rvListClientChoose.setAdapter(productAdapter);
+//                            if (products.size() == 0){
+//                                readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
+//                            }
+//                        } else {
+//                            readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
+//                        }
+//                    }}).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        readListOfProductsFromClientIfHaveElseFromHall(value,nameHall,chooseFromAll,chooseFromAll);
+//                    }
+//                });
     }
     private void readListOfProductsFromClientIfHaveElseFromClient(String value, String nameHall, String emailClient){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name = String.valueOf(document.getData().get("name"));
-                                String image = String.valueOf(document.getData().get("image"));
-                                Long price = (Long)(document.getData().get("price"));
-                                Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
-                                Boolean chooseThis = (Boolean)(document.getData().get("chooseThis"));
-                                Long priceClient = (Long)(document.getData().get("priceClient"));
-                                Product product = new Product(name,price,inPrice,priceClient,image,chooseThis);
 
-                                if (chooseThis != null && chooseThis){
+        (new CloudFunctions()).readClientChoiceTypeDataFromFirebase("client",emailClient,hallName, "בחירות",value)
+                .addOnCompleteListener(new OnCompleteListener<List<Product>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Product>> task) {
+                        if (task.isSuccessful()) {
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                Product product = new Product(task.getResult().get(i).getName(),task.getResult().get(i).getPrice(),task.getResult().get(i).isInPrice(),task.getResult().get(i).getPriceClient(),task.getResult().get(i).getImage(),task.getResult().get(i).isChooseThis());
+                                if (task.getResult().get(i).isChooseThis() != null && task.getResult().get(i).isChooseThis()){
                                     products.add(product);
                                 }
                             }
@@ -362,149 +402,395 @@ public class EditChooseFragment extends Fragment {
                             ProductAdapter productAdapter = new ProductAdapter(getContext(), products);
                             rvListClientChoose.setAdapter(productAdapter);
 
-                        } else {
+
+                        }else{
+
+                            System.out.println("Error getting documents.");
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }}).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
                     }
                 });
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String name = String.valueOf(document.getData().get("name"));
+//                                String image = String.valueOf(document.getData().get("image"));
+//                                Long price = (Long)(document.getData().get("price"));
+//                                Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+//                                Boolean chooseThis = (Boolean)(document.getData().get("chooseThis"));
+//                                Long priceClient = (Long)(document.getData().get("priceClient"));
+//                                Product product = new Product(name,price,inPrice,priceClient,image,chooseThis);
+//
+//                                if (chooseThis != null && chooseThis){
+//                                    products.add(product);
+//                                }
+//                            }
+//                            rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+//                            ProductAdapter productAdapter = new ProductAdapter(getContext(), products);
+//                            rvListClientChoose.setAdapter(productAdapter);
+//
+//                        } else {
+//                        }
+//                    }}).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                    }
+//                });
     }
     private void readListOfProductsFromClientIfHaveElseFromHall(String value, String nameHall, String chooseFromAll, String fromAll){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall").document(nameHall).collection(value)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        (new CloudFunctions()).readHallProductDataFromFirebase("hall",nameHall,value)
+                .addOnCompleteListener(new OnCompleteListener<List<Product>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Product>> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId());
-                                if (!document.getId().equals("count")){
-                                    String name = String.valueOf(document.getData().get("name"));
-                                    String image = String.valueOf(document.getData().get("image"));
-                                    Long price = (Long)(document.getData().get("price"));
-                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
-                                    Product product = new Product(name,price,inPrice,0L,image,false);
-                                    products.add(product);
-                                }
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                Product product = new Product(task.getResult().get(i).getName(),task.getResult().get(i).getPrice(),task.getResult().get(i).isInPrice(),task.getResult().get(i).getPriceClient(),task.getResult().get(i).getImage(),task.getResult().get(i).isChooseThis());
+                                products.add(product);
                             }
                             rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
                             ProductAdapter productAdapter = new ProductAdapter(getContext(), products,Integer.parseInt(chooseFromAll),Integer.parseInt(fromAll));
                             rvListClientChoose.setAdapter(productAdapter);
-                        } else {
+
+                        }else{
+
                             System.out.println("Error getting documents.");
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }});
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("hall").document(nameHall).collection(value)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                System.out.println(document.getId());
+//                                if (!document.getId().equals("count")){
+//                                    String name = String.valueOf(document.getData().get("name"));
+//                                    String image = String.valueOf(document.getData().get("image"));
+//                                    Long price = (Long)(document.getData().get("price"));
+//                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+//                                    Product product = new Product(name,price,inPrice,0L,image,false);
+//                                    products.add(product);
+//                                }
+//                            }
+//                            rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+//                            ProductAdapter productAdapter = new ProductAdapter(getContext(), products,Integer.parseInt(chooseFromAll),Integer.parseInt(fromAll));
+//                            rvListClientChoose.setAdapter(productAdapter);
+//                        } else {
+//                            System.out.println("Error getting documents.");
+//                        }
+//                    }});
     }
 
     private void saveInFirebaseClient(ArrayList<Product> productWithChooseOrNoClient, int i) {
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Product product = productWithChooseOrNoClient.get(i);
-        Map<String, Object> product1 = new HashMap<>();
-        product1.put("name", product.getName());
-        product1.put("price", product.getPrice());
-        product1.put("image", product.getImage());
-        product1.put("inPrice", product.isInPrice());
-        product1.put("priceClient", product.getPriceClient());
-        product1.put("chooseThis", product.isChooseThis());
+//        Map<String, Object> product1 = new HashMap<>();
+//        product1.put("name", product.getName());
+//        product1.put("price", product.getPrice());
+//        product1.put("image", product.getImage());
+//        product1.put("inPrice", product.isInPrice());
+//        product1.put("priceClient", product.getPriceClient());
+//        product1.put("chooseThis", product.isChooseThis());
         namesProduct.remove(product.getName());
-        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value).document(product.getName())
-                .set(product1)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+
+
+
+
+        new CloudFunctions().writeClientChoiceTypeToFirebase("client",  emailClient, hallName,"בחירות", value, product.getName(),product.getName(),product.getPrice(), product.getImage(), product.isInPrice(), product.getPriceClient(), product.isChooseThis())
+                .addOnCompleteListener(new OnCompleteListener<Product>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        loadingdialog.dismissdialog();
-                        if (productWithChooseOrNoClient.size() - 1 > i) {
-                            saveInFirebaseClient(productWithChooseOrNoClient, i + 1);
-                        }else {
-                            Toast.makeText(getContext(), "הבחירה נשמרה", Toast.LENGTH_SHORT).show();
+                    public void onComplete(@NonNull Task<Product> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            loadingdialog.dismissdialog();
+                            if (productWithChooseOrNoClient.size() - 1 > i) {
+                                saveInFirebaseClient(productWithChooseOrNoClient, i + 1);
+                            }else {
+                                Toast.makeText(getContext(), "הבחירה נשמרה", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
-                        System.out.println(e.toString());
                     }
                 });
 
 
+
+
+
+//
+//
+//
+//        db.collection("client").document(emailClient).collection(hallName).document("בחירות").collection(value).document(product.getName())
+//                .set(product1)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        loadingdialog.dismissdialog();
+//                        if (productWithChooseOrNoClient.size() - 1 > i) {
+//                            saveInFirebaseClient(productWithChooseOrNoClient, i + 1);
+//                        }else {
+//                            Toast.makeText(getContext(), "הבחירה נשמרה", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                        System.out.println(e.toString());
+//                    }
+//                });
+
+
     }
     private void readCountHallEditInFirebase(String value,LinearLayout llListHallEdit){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        System.out.println(name);
-        System.out.println(value);
-        db.collection("hall").document(name).collection(value).document("count")
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        if (document.getId().equals("count")) {
-                            String chooseCountAll = String.valueOf(document.getData().get("chooseCountAll"));
-                            String chooseFromAll = String.valueOf(document.getData().get("chooseFromAll"));
-                            tvHallEditChooseCountAll.setText(chooseCountAll);
-                            tvHallEditChooseFromAll.setText(chooseFromAll);
+
+        (new CloudFunctions()).readCountHallEditDataFromFirebase("hall",name,value)
+                .addOnCompleteListener(new OnCompleteListener<CountHallEdit>() {
+                    @Override
+                    public void onComplete(@NonNull Task<CountHallEdit> task) {
+                        if (task.isSuccessful()) {
+//                            for (int i = 0; i < task.getResult().size(); i++) {
+//                                System.out.println(task.getResult().get(i));
+//                                Product product = new Product(task.getResult().get(i).getName(),task.getResult().get(i).getPrice(),task.getResult().get(i).isInPrice(),task.getResult().get(i).getPriceClient(),task.getResult().get(i).getImage(),task.getResult().get(i).isChooseThis());
+//                                products.add(product);
+//                            }
+//                            rvListClientChoose.setLayoutManager(new LinearLayoutManager(getContext()));
+//                            ProductAdapter productAdapter = new ProductAdapter(getContext(), products,Integer.parseInt(chooseFromAll),Integer.parseInt(fromAll));
+//                            rvListClientChoose.setAdapter(productAdapter);
+                            if (task.getResult()!= null) {
+                                if (task.getResult().getChooseCountAll() != null) {
+                                    tvHallEditChooseCountAll.setText(task.getResult().getChooseCountAll());
+
+                                } else {
+                                    tvHallEditChooseCountAll.setText("0");
+
+                                }
+                                if (task.getResult().getChooseFromAll() != null) {
+                                    tvHallEditChooseFromAll.setText(task.getResult().getChooseFromAll());
+
+                                } else {
+                                    tvHallEditChooseFromAll.setText("0");
+
+                                }
+                            }else {
+                                tvHallEditChooseCountAll.setText("0");
+                                tvHallEditChooseFromAll.setText("0");
+
+                            }
                             readListHallEditInFirebase(value, llListHallEdit);
+
+                        }else{
+
+                            System.out.println("Error getting documents.");
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
                     }
-                }
-            }
-        });
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        System.out.println(name);
+//        System.out.println(value);
+//        db.collection("hall").document(name).collection(value).document("count")
+//                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        if (document.getId().equals("count")) {
+//                            String chooseCountAll = String.valueOf(document.getData().get("chooseCountAll"));
+//                            String chooseFromAll = String.valueOf(document.getData().get("chooseFromAll"));
+//                            tvHallEditChooseCountAll.setText(chooseCountAll);
+//                            tvHallEditChooseFromAll.setText(chooseFromAll);
+//                            readListHallEditInFirebase(value, llListHallEdit);
+//                        }
+//                    }
+//                }
+//            }
+//        });
     }
         private void readListHallEditInFirebase(String value,LinearLayout llListHallEdit){
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("hall").document(name).collection(value)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (!document.getId().equals("count")){
-                                    String name = String.valueOf(document.getData().get("name"));
-                                    namesProduct.add(name);
-                                    String image = String.valueOf(document.getData().get("image"));
-                                    Long price = (Long)(document.getData().get("price"));
-                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
-                                    Product product = new Product(name,price,inPrice,0L,image,false);
+            Log.e("-----","-----");
+
+            (new CloudFunctions()).readHallProductDataFromFirebase("hall",name,value)
+                    .addOnCompleteListener(new OnCompleteListener<List<Product>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<Product>> task) {
+                            if (task.isSuccessful()) {
+                                for (int i = 0; i < task.getResult().size(); i++) {
+                                    Log.e("lllll","lllll");
+                                    System.out.println(task.getResult().get(i));
+                                    namesProduct.add(task.getResult().get(i).getName());
+                                    Product product = new Product(task.getResult().get(i).getName(),task.getResult().get(i).getPrice(),task.getResult().get(i).isInPrice(),0L,task.getResult().get(i).getImage(),false);
                                     addNewBoxView(llListHallEdit,product);
                                 }
+                                addNewBoxView(llListHallEdit);
+
+
+                            }else{
+
+                                System.out.println("1Error getting documents1.");
+                                Exception e = task.getException();
+                                if (e instanceof FirebaseFunctionsException) {
+                                    FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                    FirebaseFunctionsException.Code code = ffe.getCode();
+                                    Object details = ffe.getDetails();
+                                    System.out.println(details.toString());
+                                }
                             }
-                            addNewBoxView(llListHallEdit);
-                        } else {
-                            System.out.println("Error getting documents.");
                         }
-                    }});
+                    });
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            db.collection("hall").document(name).collection(value)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                if (!document.getId().equals("count")){
+//                                    String name = String.valueOf(document.getData().get("name"));
+//                                    namesProduct.add(name);
+//                                    String image = String.valueOf(document.getData().get("image"));
+//                                    Long price = (Long)(document.getData().get("price"));
+//                                    Boolean inPrice = (Boolean)(document.getData().get("inPrice"));
+//                                    Product product = new Product(name,price,inPrice,0L,image,false);
+//                                    addNewBoxView(llListHallEdit,product);
+//                                }
+//                            }
+//                            addNewBoxView(llListHallEdit);
+//                        } else {
+//                            System.out.println("Error getting documents.");
+//                        }
+//                    }});
     }
 
     private void saveCountHallEditInFirebase(String value, String numChooseCountAll, String numChooseFromAll) {
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> countChoose = new HashMap<>();
-        countChoose.put("chooseCountAll", numChooseCountAll);
-        countChoose.put("chooseFromAll", numChooseFromAll);
-        db.collection("hall").document(name).collection(value).document("count")
-                .set(countChoose)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+        new CloudFunctions().writeCountHallEditToFirebase("hall",name,value,"count",numChooseCountAll,numChooseFromAll)
+                .addOnCompleteListener(new OnCompleteListener<CountHallEdit>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        loadingdialog.dismissdialog();
-                        saveListHallEditInFirebase(value, 0);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
+                    public void onComplete(@NonNull Task<CountHallEdit> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            loadingdialog.dismissdialog();
+                            saveListHallEditInFirebase(value, 0);
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
+                        }
                     }
                 });
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        Map<String, Object> countChoose = new HashMap<>();
+//        countChoose.put("chooseCountAll", numChooseCountAll);
+//        countChoose.put("chooseFromAll", numChooseFromAll);
+//        db.collection("hall").document(name).collection(value).document("count")
+//                .set(countChoose)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        loadingdialog.dismissdialog();
+//                        saveListHallEditInFirebase(value, 0);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                    }
+//                });
     }
 
 
@@ -512,35 +798,72 @@ public class EditChooseFragment extends Fragment {
     private void saveListHallEditInFirebase(String value, int i) {
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Product product = products.get(i);
-        Map<String, Object> product1 = new HashMap<>();
-        product1.put("name", product.getName());
-        product1.put("price", product.getPrice());
-        product1.put("image", product.getImage());
-        product1.put("inPrice", product.isInPrice());
-        namesProduct.remove(product.getName());
-        db.collection("hall").document(name).collection(value).document(product.getName())
-                .set(product1)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        new CloudFunctions().writeHallProductToFirebase("hall",name,value,product.getName(),product.getName(),product.getPrice(), product.getImage(), product.isInPrice(), 0L, false)
+                .addOnCompleteListener(new OnCompleteListener<Product>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        loadingdialog.dismissdialog();
-                        if (products.size() - 1 > i) {
-                            saveListHallEditInFirebase(value, i + 1);
-                        }else {
-                            if (namesProduct.size() > 0){
-                                saveDeleteProduct(0);
+                    public void onComplete(@NonNull Task<Product> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            loadingdialog.dismissdialog();
+                            if (products.size() - 1 > i) {
+                                saveListHallEditInFirebase(value, i + 1);
+                            }else {
+                                if (namesProduct.size() > 0){
+                                    saveDeleteProduct(0);
+                                }
+                            }
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
                             }
                         }
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
-                    }
                 });
+
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        Map<String, Object> product1 = new HashMap<>();
+//        product1.put("name", product.getName());
+//        product1.put("price", product.getPrice());
+//        product1.put("image", product.getImage());
+//        product1.put("inPrice", product.isInPrice());
+//        namesProduct.remove(product.getName());
+//        db.collection("hall").document(name).collection(value).document(product.getName())
+//                .set(product1)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        loadingdialog.dismissdialog();
+//                        if (products.size() - 1 > i) {
+//                            saveListHallEditInFirebase(value, i + 1);
+//                        }else {
+//                            if (namesProduct.size() > 0){
+//                                saveDeleteProduct(0);
+//                            }
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                    }
+//                });
     }
     public void saveDeleteProduct(int i){
         for (int j = 0; j < namesProduct.size(); j++) {
@@ -548,24 +871,53 @@ public class EditChooseFragment extends Fragment {
         }
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall").document(name).collection(value).document(namesProduct.get(i))
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+
+        new CloudFunctions().deleteDataFromFirebase("hall",name,value,namesProduct.get(i))
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        loadingdialog.dismissdialog();
-                        if (namesProduct.size() - 1 > i) {
-                            saveDeleteProduct( i + 1);
+                    public void onComplete(@NonNull Task<String> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            Log.e("demo",""+task.getResult());
+                            loadingdialog.dismissdialog();
+                            if (namesProduct.size() - 1 > i) {
+                                saveDeleteProduct( i + 1);
+                            }
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("error",e.getMessage());
-                    }
                 });
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("hall").document(name).collection(value).document(namesProduct.get(i))
+//                .delete()
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        loadingdialog.dismissdialog();
+//                        if (namesProduct.size() - 1 > i) {
+//                            saveDeleteProduct( i + 1);
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e("error",e.getMessage());
+//                    }
+//                });
     }
 
 

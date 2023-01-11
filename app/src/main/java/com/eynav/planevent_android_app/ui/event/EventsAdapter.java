@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +25,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.eynav.planevent_android_app.ChooseHall;
+import com.eynav.planevent_android_app.CloudFunctions;
 import com.eynav.planevent_android_app.Event;
 import com.eynav.planevent_android_app.R;
+import com.eynav.planevent_android_app.SingupClientActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -228,33 +237,64 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
     }
     private void addEventToFirebase(Event event1) {
         System.out.println("addEventToFirebase");
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> event = new HashMap<>();
-        event.put("emailClient1", event1.getEmailClient1());
-        event.put("emailClient2", event1.getEmailClient2());
-        event.put("countInvited", event1.getCountInvited());
-        event.put("price", event1.getPrice());
-        event.put("typeEvent", event1.getTypeEvent());
-        event.put("dateEvent", event1.getDateEvent());
-        event.put("lastNameEvent", event1.getLastNameEvent());
-        event.put("hourEvent", event1.getHourEvent());
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        Map<String, Object> event = new HashMap<>();
+//        event.put("emailClient1", event1.getEmailClient1());
+//        event.put("emailClient2", event1.getEmailClient2());
+//        event.put("countInvited", event1.getCountInvited());
+//        event.put("price", event1.getPrice());
+//        event.put("typeEvent", event1.getTypeEvent());
+//        event.put("dateEvent", event1.getDateEvent());
+//        event.put("lastNameEvent", event1.getLastNameEvent());
+//        event.put("hourEvent", event1.getHourEvent());
         String date = event1.getDateEvent();
         date = date.replaceAll("/","");
         String eventname = event1.getLastNameEvent()+date;
-        db.collection("hall").document(nameUser).collection("events").document(eventname)
-                .set(event)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+
+
+
+
+        new CloudFunctions().writeEventToFirebase("hall",  nameUser, "events", eventname, event1.getEmailClient1(), event1.getEmailClient2(), event1.getCountInvited(), event1.getPrice(), event1.getTypeEvent(), event1.getDateEvent(), event1.getLastNameEvent(), event1.getHourEvent())
+                .addOnCompleteListener(new OnCompleteListener<Event>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        System.out.println("DocumentSnapshot added");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
+                    public void onComplete(@NonNull Task<Event> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            System.out.println("DocumentSnapshot added");
+
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
+                        }
                     }
                 });
+
+
+
+
+
+//        db.collection("hall").document(nameUser).collection("events").document(eventname)
+//                .set(event)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        System.out.println("DocumentSnapshot added");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                    }
+//                });
 
     }
     public void saveDeleteProduct(Event event1, int position, boolean delete){
@@ -262,25 +302,62 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsAdap
         String date = event1.getDateEvent();
         date = date.replaceAll("/","");
         String eventname = event1.getLastNameEvent()+date;
-        db.collection("hall").document(nameUser).collection("events").document(eventname)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        if (delete){
-                            events.remove(position);
 
-                            notifyItemRemoved(position);
+
+
+
+
+        new CloudFunctions().deleteDataFromFirebase("hall",  nameUser,  "events",eventname)
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            Log.e("demo",""+task.getResult());
+                            if (delete){
+                                events.remove(position);
+
+                                notifyItemRemoved(position);
+                            }
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("error",e.getMessage());
                     }
                 });
+
+
+
+
+
+
+
+//        db.collection("hall").document(nameUser).collection("events").document(eventname)
+//                .delete()
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        if (delete){
+//                            events.remove(position);
+//
+//                            notifyItemRemoved(position);
+//                        }
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e("error",e.getMessage());
+//                    }
+//                });
+
     }
     public void clear() {
         int size = events.size();

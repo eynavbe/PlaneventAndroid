@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,38 +106,76 @@ public class RegisterHallActivity extends AppCompatActivity {
 
     private void addHallToFirebase() {
         System.out.println("addEventToFirebase");
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
-        Map<String, Object> hall = new HashMap<>();
-        hall.put("hallName", hallName.getText().toString());
-        hall.put("hallArea", hallArea.getText().toString());
-        hall.put("maxHallPeople", maxHallPeople.getText().toString());
-        hall.put("phoneNum", phoneNum.getText().toString());
-        hall.put("email", email.getText().toString());
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        // Create a new user with a first and last name
+//        Map<String, Object> hall = new HashMap<>();
+//        hall.put("hallName", hallName.getText().toString());
+//        hall.put("hallArea", hallArea.getText().toString());
+//        hall.put("maxHallPeople", maxHallPeople.getText().toString());
+//        hall.put("phoneNum", phoneNum.getText().toString());
+//        hall.put("email", email.getText().toString());
         Activity activity = this;
         Loading loadingdialog = new Loading(activity);
         loadingdialog.startLoadingdialog();
-        db.collection("hall").document(hallName.getText().toString())
-                .set(hall)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        loadingdialog.dismissdialog();
-                        SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
 
-                        // save your string in SharedPreferences
-                        shareType.edit().putString("name", hallName.getText().toString()).commit();
-                        startActivity(new Intent(RegisterHallActivity.this, MainActivity.class));
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+
+
+        new CloudFunctions().writeHallToFirebase("hall",  hallName.getText().toString(),  hallName.getText().toString(), hallArea.getText().toString(), maxHallPeople.getText().toString(), phoneNum.getText().toString(), email.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<Hall>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
-                        System.out.println(e.toString());
+                    public void onComplete(@NonNull Task<Hall> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            Log.e("demo",""+task.getResult());
+                            loadingdialog.dismissdialog();
+                            SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+
+                            // save your string in SharedPreferences
+                            shareType.edit().putString("name", hallName.getText().toString()).commit();
+                            startActivity(new Intent(RegisterHallActivity.this, MainActivity.class));
+                            finish();
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
+                        }
                     }
                 });
+
+
+
+//        db.collection("hall").document(hallName.getText().toString())
+//                .set(hall)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        loadingdialog.dismissdialog();
+//                        SharedPreferences shareType = getSharedPreferences("name", MODE_PRIVATE);
+//
+//                        // save your string in SharedPreferences
+//                        shareType.edit().putString("name", hallName.getText().toString()).commit();
+//                        startActivity(new Intent(RegisterHallActivity.this, MainActivity.class));
+//                        finish();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                        System.out.println(e.toString());
+//                    }
+//                });
+
+
+
+
+
+
 
     }
 }

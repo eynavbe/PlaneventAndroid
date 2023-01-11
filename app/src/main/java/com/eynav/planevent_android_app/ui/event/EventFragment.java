@@ -3,11 +3,17 @@ package com.eynav.planevent_android_app.ui.event;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +26,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.eynav.planevent_android_app.CloudFunctions;
 import com.eynav.planevent_android_app.Event;
+import com.eynav.planevent_android_app.Hall;
 import com.eynav.planevent_android_app.Loading;
+import com.eynav.planevent_android_app.MainActivity;
 import com.eynav.planevent_android_app.R;
+import com.eynav.planevent_android_app.RegisterHallActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,6 +49,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -225,63 +239,163 @@ public class EventFragment extends Fragment {
             SharedPreferences shareName = getContext().getSharedPreferences("emailClient", MODE_PRIVATE);
             String emailClient = shareName.getString("emailClient", "default if empty");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("hall").document(nameUser).collection("events").whereEqualTo("emailClient1",emailClient)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+
+
+
+            new CloudFunctions().readEventsDataFromFirebase("hall", nameUser, "events")
+                    .addOnCompleteListener(new OnCompleteListener<List<Event>>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        public void onComplete(@NonNull Task<List<Event>> task) {
+                            System.out.println(task.toString());
+                            System.out.println(task.getResult().toString());
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
-                                    String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
-                                    Long countInvited = (Long)(document.getData().get("countInvited"));
-                                    Long price = (Long)(document.getData().get("price"));
-                                    String typeEvent = String.valueOf(document.getData().get("typeEvent"));
-                                    String dateEvent = String.valueOf(document.getData().get("dateEvent"));
-                                    String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
-                                    String hourEvent = String.valueOf(document.getData().get("hourEvent"));
-                                    Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
-                                    Fragment myFragment = new AccountSummary(event,"client");
-                                    AppCompatActivity activity = (AppCompatActivity) getContext();
+                                for (int i = 0; i < task.getResult().size(); i++) {
+                                    System.out.println(task.getResult().get(i));
+                                    if (task.getResult().get(i).getEmailClient1().equals(emailClient)){
+                                        Event event = new Event(task.getResult().get(i).getEmailClient1(),task.getResult().get(i).getEmailClient2(),task.getResult().get(i).getCountInvited(),task.getResult().get(i).getPrice(),task.getResult().get(i).getTypeEvent(),task.getResult().get(i).getDateEvent(),task.getResult().get(i).getLastNameEvent(),task.getResult().get(i).getHourEvent());
+                                        Fragment myFragment = new AccountSummary(event,"client");
+                                        AppCompatActivity activity = (AppCompatActivity) getContext();
 
-                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
+                                        activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
 
+                                    }
+                                    if (task.getResult().get(i).getEmailClient2().equals(emailClient)){
+                                        Event event = new Event(task.getResult().get(i).getEmailClient1(),task.getResult().get(i).getEmailClient2(),task.getResult().get(i).getCountInvited(),task.getResult().get(i).getPrice(),task.getResult().get(i).getTypeEvent(),task.getResult().get(i).getDateEvent(),task.getResult().get(i).getLastNameEvent(),task.getResult().get(i).getHourEvent());
+                                        Fragment myFragment = new AccountSummary(event,"client");
+                                        AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                                        activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
+
+                                    }
                                 }
-                            } else {
-                                System.out.println("Error getting documents.");
+
+
+                            }else{
+
+
+                                Exception e = task.getException();
+                                if (e instanceof FirebaseFunctionsException) {
+                                    FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                    FirebaseFunctionsException.Code code = ffe.getCode();
+                                    Object details = ffe.getDetails();
+                                    System.out.println(details.toString());
+                                }
                             }
-                        }});
+                        }
+                    });
+
+
+
+
+
+
+
+
+
+//            db.collection("hall").document(nameUser).collection("events").whereEqualTo("emailClient1",emailClient)
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
+//                                    String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
+//                                    Long countInvited = (Long)(document.getData().get("countInvited"));
+//                                    Long price = (Long)(document.getData().get("price"));
+//                                    String typeEvent = String.valueOf(document.getData().get("typeEvent"));
+//                                    String dateEvent = String.valueOf(document.getData().get("dateEvent"));
+//                                    String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
+//                                    String hourEvent = String.valueOf(document.getData().get("hourEvent"));
+//                                    Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
+//                                    Fragment myFragment = new AccountSummary(event,"client");
+//                                    AppCompatActivity activity = (AppCompatActivity) getContext();
+//
+//                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, myFragment).addToBackStack(null).commit();
+//
+//                                }
+//                            } else {
+//                                System.out.println("Error getting documents.");
+//                            }
+//                        }});
 
         }
         }
 
     private void readEventsFromFirebase() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("hall").document(nameUser).collection("events")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+
+
+        new CloudFunctions().readEventsDataFromFirebase("hall", nameUser, "events")
+                .addOnCompleteListener(new OnCompleteListener<List<Event>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Event>> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
-                                String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
-                                Long countInvited = (Long)(document.getData().get("countInvited"));
-                                Long price = (Long)(document.getData().get("price"));
-                                String typeEvent = String.valueOf(document.getData().get("typeEvent"));
-                                String dateEvent = String.valueOf(document.getData().get("dateEvent"));
-                                String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
-                                String hourEvent = String.valueOf(document.getData().get("hourEvent"));
-                                Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                System.out.println(task.getResult().get(i));
+                                Event event = new Event(task.getResult().get(i).getEmailClient1(),task.getResult().get(i).getEmailClient2(),task.getResult().get(i).getCountInvited(),task.getResult().get(i).getPrice(),task.getResult().get(i).getTypeEvent(),task.getResult().get(i).getDateEvent(),task.getResult().get(i).getLastNameEvent(),task.getResult().get(i).getHourEvent());
                                 events.add(event);
+
                             }
                             rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
                             eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
                             rvEvent.setAdapter(eventsAdapter);
-                        } else {
-                            System.out.println("Error getting documents.");
+
+                        }else{
+
+
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
                         }
-                    }});
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("hall").document(nameUser).collection("events")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String emailClient1 = String.valueOf(document.getData().get("emailClient1"));
+//                                String emailClient2 = String.valueOf(document.getData().get("emailClient2"));
+//                                Long countInvited = (Long)(document.getData().get("countInvited"));
+//                                Long price = (Long)(document.getData().get("price"));
+//                                String typeEvent = String.valueOf(document.getData().get("typeEvent"));
+//                                String dateEvent = String.valueOf(document.getData().get("dateEvent"));
+//                                String lastNameEvent = String.valueOf(document.getData().get("lastNameEvent"));
+//                                String hourEvent = String.valueOf(document.getData().get("hourEvent"));
+//                                Event event = new Event(emailClient1,emailClient2,countInvited,price,typeEvent,dateEvent,lastNameEvent,hourEvent);
+//                                events.add(event);
+//                            }
+//                            rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
+//                            eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
+//                            rvEvent.setAdapter(eventsAdapter);
+//                        } else {
+//                            System.out.println("Error getting documents.");
+//                        }
+//                    }});
     }
 
     private void addEventToFirebase(Event event1) {
@@ -301,23 +415,60 @@ public class EventFragment extends Fragment {
         String date = event1.getDateEvent();
         date = date.replaceAll("/","");
         String eventname = event1.getLastNameEvent()+date;
-        db.collection("hall").document(nameUser).collection("events").document(eventname)
-                .set(event)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+        events.add(event1);
+
+
+
+
+        new CloudFunctions().writeEventToFirebase("hall",  nameUser, "events", eventname, event1.getEmailClient1(), event1.getEmailClient2(), event1.getCountInvited(), event1.getPrice(), event1.getTypeEvent(), event1.getDateEvent(), event1.getLastNameEvent(), event1.getHourEvent())
+                .addOnCompleteListener(new OnCompleteListener<Event>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
-                        eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
-                        rvEvent.setAdapter(eventsAdapter);
-                        loadingdialog.dismissdialog();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document");
+                    public void onComplete(@NonNull Task<Event> task) {
+                        System.out.println(task.toString());
+                        System.out.println(task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
+                            eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
+                            rvEvent.setAdapter(eventsAdapter);
+                            loadingdialog.dismissdialog();
+                        }else{
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+                                System.out.println(details.toString());
+                            }
+                        }
                     }
                 });
+
+
+
+
+
+
+
+
+//        db.collection("hall").document(nameUser).collection("events").document(eventname)
+//                .set(event)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        rvEvent.setLayoutManager(new LinearLayoutManager(getContext()));
+//                        eventsAdapter = new EventsAdapter(getContext(), events,nameUser);
+//                        rvEvent.setAdapter(eventsAdapter);
+//                        loadingdialog.dismissdialog();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document");
+//                    }
+//                });
 
     }
 
