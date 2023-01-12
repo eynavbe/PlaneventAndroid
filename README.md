@@ -11,3 +11,23 @@ Customers who close an on-site event with the hall owner will get access to the 
 ## Permissions:
 - Event hall manager
 - The owner of the event / customers of the halls
+
+
+## Features:
+- Management of the registration and login system: to allow the hall owner and the customer to enter the application and manage their event.
+
+- Managing the details of the event: to allow the hall owner to add and edit the details of the event such as date and time, the last name and email of the client and to allow the client to manage the event which is possible only after the hall owner has registered his event.
+
+- Management of services and additions: to allow the hall owner to add and manage the services he offers and allow the customer to choose from them.
+
+- Account management: to allow the owner of the hall to manage the customers' accounts and allow the customer to view their accounts according to the customer's choices which can lead to an increase in the price and allow the customer to view the price increase for the services requested by him.
+
+
+In branch "" - the code is displayed up to the point when on the date of the update a connection to firebase was made directly from android studio without using the server.
+In branch "" - the code is shown where the connection is made between the android studio and then the request goes to the server and then to firebase
+
+## Technological mapping:
+- Android Studio - The development environment for building the applicationץ
+- Node.js - The environment where the server's interface is created.
+- Firebase - to store data in the cloud
+
