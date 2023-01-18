@@ -58,6 +58,7 @@ dependencies {
     // Google sing-in library
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
+    implementation 'com.github.iwgang:countdownview:2.1.6'
 
 
 

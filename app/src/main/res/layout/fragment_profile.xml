@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+    android:background="@color/white"
+
+    tools:context=".ui.home.ProfileFragment">
+
+<TextView
+    android:id="@+id/idManagRgtrHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:gravity="center_horizontal"
+    android:padding="10dp"
+    android:text="עריכת פרופיל"
+    android:textAlignment="center"
+    android:textColor="@color/purple"
+    android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/editNameN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idManagRgtrHeader"
+
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="שם אולם:"/>
+<TextView
+    android:id="@+id/editName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/idManagRgtrHeader"
+    android:layout_marginStart="10dp"
+
+    android:layout_centerHorizontal="true"
+    android:layout_toEndOf="@+id/editNameN"
+    android:textSize="16sp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="10dp"
+    android:text="Name"/>
+    <TextView
+        android:id="@+id/editEmailN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editName"
+
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="אימייל:"/>
+<TextView
+    android:id="@+id/editEmail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/editName"
+    android:layout_marginStart="10dp"
+    android:layout_centerHorizontal="true"
+    android:layout_toEndOf="@+id/editEmailN"
+    android:textSize="16sp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="10dp"
+    android:text="Email"/>
+    <TextView
+        android:id="@+id/idAreaHallN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editEmail"
+
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="אזור אולם:"/>
+<EditText
+    android:id="@+id/idAreaHall"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/editEmail"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="10dp"
+    android:layout_toEndOf="@+id/idAreaHallN"
+
+    android:hint="Hall area"
+    android:inputType="textEmailAddress" />
+    <TextView
+        android:id="@+id/idNumberInvtManagN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idAreaHall"
+
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="כמות אכלוס:"/>
+<EditText
+    android:id="@+id/idNumberInvtManag"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/idAreaHall"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="10dp"
+    android:layout_toEndOf="@+id/idNumberInvtManagN"
+
+    android:hint="Maximum number of people in the hall"
+    android:inputType="number" />
+    <TextView
+        android:id="@+id/idManagePhoneNumN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idNumberInvtManag"
+
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="מספר טלפון:"/>
+<EditText
+    android:id="@+id/idManagePhoneNum"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/idNumberInvtManag"
+    android:layout_toEndOf="@+id/idManagePhoneNumN"
+
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="10dp"
+    android:hint="Phone number"
+    android:inputType="phone" />
+
+<!--edit text for user name-->
+
+
+
+<!--button to register our new user-->
+<Button
+    android:id="@+id/saveButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/idManagePhoneNum"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="20dp"
+    android:text="שמור"
+    android:backgroundTint="@color/purple"/>
+
+
+</RelativeLayout>

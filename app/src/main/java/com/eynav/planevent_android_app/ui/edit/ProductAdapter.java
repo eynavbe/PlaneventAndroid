@@ -31,9 +31,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductA
         this.context = context;
         this.products = products;
         this.countInPrice = countInPrice;
+        this.countChoose = 0;
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).isInPrice() && products.get(i).isChooseThis()){
-                this.countInPrice++;
+                this.countChoose++;
             }
         }
         noChoose = false;

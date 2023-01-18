@@ -15,18 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Planevent_Android_App"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".CloudFunctions"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--            <meta-data-->
-<!--                android:name="android.app.lib_name"-->
-<!--                android:value="" />-->
-<!--        </activity>-->
+        <!-- <activity -->
+        <!-- android:name=".CloudFunctions" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.app.lib_name" -->
+        <!-- android:value="" /> -->
+        <!-- </activity> -->
         <activity
             android:name=".ChooseHall"
             android:exported="false">
@@ -75,7 +75,6 @@
         <activity
             android:name=".RegisterClientActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
