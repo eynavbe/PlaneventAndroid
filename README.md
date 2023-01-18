@@ -174,3 +174,9 @@ After selecting the type of item to choose from, a screen will be displayed desc
 <img src="https://user-images.githubusercontent.com/93534494/212084044-aabb1283-adb4-41a7-a52a-cafd831571c4.png" width="170" height="350">
 <img src="https://user-images.githubusercontent.com/93534494/212084052-e109a9f1-1578-48e0-8e71-26ba75c97c65.png" width="170" height="350">
 
+
+
+## Tutorial Video
+https://user-images.githubusercontent.com/93534494/213278658-f99e5e93-8d95-4da7-8c2f-8a3606efe16b.mp4
+
+
