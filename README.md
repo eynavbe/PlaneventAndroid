@@ -43,6 +43,17 @@ When the user chooses which interface is relevant to him (customer or hall owner
 <img src="https://user-images.githubusercontent.com/93534494/212080290-5ecdfd93-699e-4e85-830a-4af948d7049a.png" width="170" height="350">
 
 ### home screen
+On the client's home page there is a short explanation of the application and a countdown timer until the client's event according to the number of days, hours, minutes and seconds (according to the event that the hall owner registered).
+
+<img src="https://user-images.githubusercontent.com/93534494/213214680-2a26f7e1-2fc0-4154-82ed-9f845bddf93a.png" width="170" height="350">
+
+On the home page of the hall owner there is a short explanation of the application and a button to reach his profile value page.
+
+<img src="https://user-images.githubusercontent.com/93534494/213214674-ed8ef587-9305-4bcc-b874-9a4de6c1862a.png" width="170" height="350">
+
+Editing the profile of the hall owner to edit the details of phone number, maximum number of guests who can enter the hall, region/city of the hall.
+
+<img src="https://user-images.githubusercontent.com/93534494/213214682-00e36d67-9b2c-4831-a13e-38e22062be3c.png" width="170" height="350">
 
 
 ### Registration + login
